@@ -1,0 +1,2 @@
+better way to showing tag
+allow_null for PrimaryKeyRelatedField - https://www.django-rest-framework.org/api-guide/relations/#primarykeyrelatedfield
