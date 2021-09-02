@@ -1,2 +1,1 @@
-check admin perm for creating things (already it just checks for authentication not admin perms!)
 better way to showing tag

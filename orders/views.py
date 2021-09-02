@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import permission_classes, action
 from rest_framework.response import Response
 
-from user_perms.permissions import IsOwnerOfItem
+from user_perms.permissions import IsOwnerOfItem,IsAdminOrReadOnly
 from .models import Order, OrderItem, PostType
 from .serializers import OrderSerializer, OrderItemSerializer, PostTypeSerializer
 
@@ -18,13 +18,13 @@ def all_methods(*args, **kwargs):
     return [m for m in methods if m not in args] if args else methods
 
 
-@permission_classes([permissions.IsAuthenticatedOrReadOnly])
+@permission_classes([IsAdminOrReadOnly])
 class PostTypeViewset(viewsets.ModelViewSet):
     queryset = PostType.objects.all()
     serializer_class = PostTypeSerializer
 
 
-@permission_classes([permissions.IsAuthenticatedOrReadOnly, IsOwnerOfItem])
+@permission_classes([IsOwnerOfItem,permissions.IsAdminUser])
 class OrderViewset(viewsets.ModelViewSet):
     queryset = Order.objects.select_related('user', 'post_type').prefetch_related('order_items').all()
     serializer_class = OrderSerializer

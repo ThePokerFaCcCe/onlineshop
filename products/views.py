@@ -6,9 +6,9 @@ from rest_framework.response import Response
 
 from .models import Promotion, Product, Category
 from .serializers import CategorySerializer, ProductSerializer, PromotionSerializer
+from user_perms.permissions import IsAdminOrReadOnly
 
-
-@permission_classes([permissions.IsAuthenticatedOrReadOnly])
+@permission_classes([IsAdminOrReadOnly])
 class CategoryViewset(viewsets.ModelViewSet):
     queryset = Category.objects.select_related("featured_product").all()  # prefetch_related('products').
     serializer_class = CategorySerializer
@@ -27,13 +27,13 @@ class CategoryViewset(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@permission_classes([permissions.IsAuthenticatedOrReadOnly])
+@permission_classes([IsAdminOrReadOnly])
 class PromotionViewset(viewsets.ModelViewSet):
     queryset = Promotion.objects.all()
     serializer_class = PromotionSerializer
 
 
-@permission_classes([permissions.IsAuthenticatedOrReadOnly])
+@permission_classes([IsAdminOrReadOnly])
 class ProductViewset(viewsets.ModelViewSet):
     queryset = Product.objects.prefetch_related("promotions").select_related('category').all()
     serializer_class = ProductSerializer
@@ -44,38 +44,3 @@ class ProductViewset(viewsets.ModelViewSet):
 def userinfo(req):
     print(req.user.is_authenticated)
     return HttpResponse(req.user.age)
-
-# @permission_classes([permissions.IsAuthenticatedOrReadOnly])
-# class CategoryList(generics.ListCreateAPIView):
-#     queryset = Category.objects.all()
-#     serializer_class = CategorySerializer
-
-
-# @permission_classes([permissions.IsAuthenticatedOrReadOnly])
-# class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Category.objects.all()
-#     serializer_class = CategorySerializer
-
-
-# @permission_classes([permissions.IsAuthenticatedOrReadOnly])
-# class PromotionList(generics.ListCreateAPIView):
-#     queryset = Promotion.objects.all()
-#     serializer_class = PromotionSerializer
-
-
-# @permission_classes([permissions.IsAuthenticatedOrReadOnly])
-# class PromotionDetail(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Promotion.objects.all()
-#     serializer_class = PromotionSerializer
-
-
-# @permission_classes([permissions.IsAuthenticatedOrReadOnly])
-# class ProductList(generics.ListCreateAPIView):
-#     queryset = Product.objects.all()
-#     serializer_class = ProductSerializer
-
-
-# @permission_classes([permissions.IsAuthenticatedOrReadOnly])
-# class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Product.objects.all()
-#     serializer_class = ProductSerializer
