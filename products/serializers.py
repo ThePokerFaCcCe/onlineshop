@@ -43,7 +43,7 @@ class FeaturedProductSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    featured_product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(),required=False)
+    featured_product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(),required=False,allow_null=True)
 
     class Meta:
 
@@ -70,7 +70,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    promotions = serializers.PrimaryKeyRelatedField(queryset=Promotion.objects.all(), many=True,required=False)
+    promotions = serializers.PrimaryKeyRelatedField(queryset=Promotion.objects.all(), many=True,required=False,allow_null=True)
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
 
     class Meta:
