@@ -12,7 +12,7 @@ except ProgrammingError:
     print("WARNING: We couldn't get ContentType model in database, if you are trying to migrate, don't care about this message")
 
 class SocialProductSerializer(ProductSerializer):
-    tags = serializers.ListField(allow_empty=True,write_only=True,
+    tags = serializers.ListField(allow_empty=True,
                                  child=serializers.IntegerField(min_value=1)
                                  )
     class Meta:  # Reason that i didn't used meta inheritance: https://github.com/encode/django-rest-framework/issues/1926#issuecomment-71819507
