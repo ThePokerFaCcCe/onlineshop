@@ -1,9 +1,14 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from django.conf import settings
 
 from .models import Order, OrderItem, PostType
 from products.models import Product
-from products.serializers import ProductSerializer
+
+if 'product_social_media' in settings.INSTALLED_APPS:
+    from product_social_media.serializers import SocialProductSerializer as ProductSerializer
+else :
+    from products.serializers import ProductSerializer
 
 User = get_user_model()
 
@@ -26,9 +31,7 @@ class PostTypeSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    # order = serializers.PrimaryKeyRelatedField(Order.objects.all())
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all()) #, write_only=True
-    # product_detail = ProductSerializer(source='product', read_only=True)
 
     class Meta:
         model = OrderItem
@@ -37,8 +40,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
             'quantity',
             'price',
             'product',
-            # 'product_detail',
-            # 'order',
         ]
         extra_kwargs = {
             'price': {'read_only': True},
@@ -51,14 +52,10 @@ class OrderItemSerializer(serializers.ModelSerializer):
         return representation
 
 class OrderSerializer(serializers.ModelSerializer):
-    post_type = serializers.PrimaryKeyRelatedField(queryset=PostType.objects.all())#, write_only=True
-    # post_type_detail = PostTypeSerializer(source='post_type', read_only=True)
+    post_type = serializers.PrimaryKeyRelatedField(queryset=PostType.objects.all())
 
     user = serializers.PrimaryKeyRelatedField(read_only=True)
-    # products = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(),many=True,write_only=True)
     products = OrderItemSerializer(source='order_items', many=True)
-    # products_detail
-    # status = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
@@ -71,7 +68,6 @@ class OrderSerializer(serializers.ModelSerializer):
 
             'post_type',
             'post_type_price',
-            # 'post_type_detail',
             'country',
             'city',
             'street',
@@ -97,7 +93,6 @@ class OrderSerializer(serializers.ModelSerializer):
         errors = []
         for item_data in items_data:
             if item_data.get('quantity') > item_data.get('product').inventory:
-                # errors.append({"product": item_data.get('product').pk, "error": "Order quantity is greater than product inventory"})
                 errors.append({"quantity": f"Order quantity is greater than product inventory with pk=\"{item_data.get('product').pk}\"" })
         if errors:
             raise serializers.ValidationError(errors, code='overflow')
@@ -176,6 +171,4 @@ class OrderSerializer(serializers.ModelSerializer):
 
         order.price = price
         order = super().update(order, validated_data)
-        # order.save()1410000
-        # order.refresh_from_db()
         return order

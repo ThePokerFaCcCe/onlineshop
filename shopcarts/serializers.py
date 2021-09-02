@@ -4,7 +4,11 @@ from rest_framework import serializers
 
 from .models import Cart, CartItem
 from products.models import Product
-from products.serializers import ProductSerializer
+
+if 'product_social_media' in settings.INSTALLED_APPS:
+    from product_social_media.serializers import SocialProductSerializer as ProductSerializer
+else :
+    from products.serializers import ProductSerializer
 
 User = get_user_model()
 
