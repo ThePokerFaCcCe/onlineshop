@@ -6,15 +6,14 @@ from products.serializers import ProductSerializer
 from social_media.models import Tag, TaggedItem
 from social_media.serializers import TagSerializer, TaggedItemSerializer
 
-try:
-    product_content_type = ContentType.objects.get_for_model(Product)
-except ProgrammingError:
-    print("WARNING: We couldn't get ContentType model in database, if you are trying to migrate, don't care about this message")
+
+# try:
+#     product_content_type = ContentType.objects.get_for_model(Product)
+# except ProgrammingError:
+#     print("WARNING: We couldn't get ContentType model in database, if you are trying to migrate, don't care about this message")
 
 class SocialProductSerializer(ProductSerializer):
-    tags = serializers.ListField(allow_empty=True,
-                                 child=serializers.IntegerField(min_value=1)
-                                 )
+    tags = serializers.ListField(allow_empty=True,write_only=True ,child=serializers.IntegerField(min_value=1))
     class Meta:  # Reason that i didn't used meta inheritance: https://github.com/encode/django-rest-framework/issues/1926#issuecomment-71819507
         model = Product
         fields = [
@@ -32,6 +31,7 @@ class SocialProductSerializer(ProductSerializer):
             'description': {'required': False},
             'tags': {'required': False}
         }
+
     def validate_tags(self, tags_pk):
         queryset = Tag.objects.all()
         errors = []
@@ -46,7 +46,7 @@ class SocialProductSerializer(ProductSerializer):
     def to_representation(self, product):
         representation = super().to_representation(product)
         tagged_items_queryset = TaggedItem.objects.select_related('tag').filter(
-            content_type=product_content_type,
+            content_type=ContentType.objects.get_for_model(Product), # Django will cache this queryset once, so at second call it doesn't send query to db
             object_id=product.pk
         )
         representation['tags']=[]
