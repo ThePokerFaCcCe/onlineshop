@@ -40,6 +40,7 @@ class Comment(Model):
     updated_at = DateTimeField(auto_now=True)
     
     user = ForeignKey(to=User,on_delete=CASCADE)
+    reply_to = ForeignKey(to='Comment', on_delete=CASCADE, related_name="reply",null=True,blank=True)
 
     content_type = ForeignKey(to=ContentType,on_delete=CASCADE)
     object_id = PositiveIntegerField()
