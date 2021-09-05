@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 from products.models import Product
 from products.serializers import ProductSerializer
-from social_media.models import Tag, TaggedItem
+from social_media.models import Tag, TaggedItem,Like
 from social_media.serializers import TagSerializer, TaggedItemSerializer
 
 
@@ -14,6 +14,10 @@ from social_media.serializers import TagSerializer, TaggedItemSerializer
 
 class SocialProductSerializer(ProductSerializer):
     tags = serializers.ListField(allow_empty=True,write_only=True ,child=serializers.IntegerField(min_value=1))
+    likes = serializers.SerializerMethodField()
+    liked_by_user = serializers.SerializerMethodField()
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:  # Reason that i didn't used meta inheritance: https://github.com/encode/django-rest-framework/issues/1926#issuecomment-71819507
         model = Product
         fields = [
@@ -25,12 +29,39 @@ class SocialProductSerializer(ProductSerializer):
             'category',
             'promotions',
             'tags',
+            'likes',
+            'liked_by_user',
+            'user',
         ]
 
         extra_kwargs = {
             'description': {'required': False},
             'tags': {'required': False}
         }
+
+    
+    def get_likes(self,product,*args,**kwargs)->int:
+        likes_count = Like.objects.filter(
+            content_type=ContentType.objects.get_for_model(Product),
+            object_id  = product.pk,
+        ).count()
+
+        return likes_count
+
+    def get_liked_by_user(self,product,*args,**kwargs)->bool:
+        user=self.context['request'].user
+        print(user)
+        is_liked=False
+        if user and user.is_authenticated:
+            user_like = Like.objects.filter(
+                content_type=ContentType.objects.get_for_model(Product),
+                object_id  = product.pk,
+                user=user
+            )
+            if user_like:
+                is_liked=True
+        return is_liked
+    
 
     def validate_tags(self, tags_pk):
         queryset = Tag.objects.all()
