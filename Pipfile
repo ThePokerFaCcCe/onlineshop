@@ -8,6 +8,10 @@ django = "*"
 django-rest-framework = "*"
 pillow = "*"
 djoser = "*"
+python-decouple = "*"
+django-debug-toolbar = "*"
+drf-spectacular = "*"
+mysqlclient = "*"
 
 [dev-packages]
 autopep8 = "*"
