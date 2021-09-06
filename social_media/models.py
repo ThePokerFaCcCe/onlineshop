@@ -1,6 +1,6 @@
 from django.db.models.base import Model
 from django.db.models.deletion import CASCADE, PROTECT
-from django.db.models.fields import CharField, DateTimeField, PositiveIntegerField, TextField
+from django.db.models.fields import CharField, DateTimeField, PositiveIntegerField, TextField, BooleanField
 from django.db.models.fields.related import ForeignKey
 
 from django.contrib.contenttypes.models import ContentType
@@ -36,6 +36,7 @@ class Like(Model):
 
 class Comment(Model):
     text = TextField(max_length=300)
+    hidden = BooleanField(default=False,blank=True)
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
     
