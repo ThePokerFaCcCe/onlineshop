@@ -6,6 +6,7 @@ it's still in progress and it isn't completed.
 # Installation
 
 Create a database named `onlineshop` in your mysql db (I personally use xampp for db)<br>
+Now, create `.env` file in cloned folder and add variables of `.env.example` in your file<br>
 Install pipenv with cmd `py -m pip install pipenv`<br>
 Then open console in cloned folder and write `pipenv install`. 
 after that, active environment shell with `pipenv shell`<br>
