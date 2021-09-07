@@ -24,7 +24,7 @@ class PostTypeViewset(viewsets.ModelViewSet):
     serializer_class = PostTypeSerializer
 
 
-@permission_classes([IsOwnerOfItem,permissions.IsAdminUser])
+@permission_classes([IsOwnerOfItem|permissions.IsAdminUser])
 class OrderViewset(viewsets.ModelViewSet):
     queryset = Order.objects.select_related('user', 'post_type').prefetch_related('order_items').all()
     serializer_class = OrderSerializer

@@ -15,7 +15,7 @@ def all_methods(*args):
     return [m for m in methods if m not in args] if args else methods
 
 
-@permission_classes([IsOwnerOfItem, permissions.IsAdminUser])
+@permission_classes([IsOwnerOfItem| permissions.IsAdminUser])
 class CartViewset(viewsets.ModelViewSet):
     queryset = Cart.objects.prefetch_related("cart_items").all()
     serializer_class = CartSerializer
@@ -56,7 +56,6 @@ class CartViewset(viewsets.ModelViewSet):
             pass
 
 
-# @permission_classes([IsOwnerOfItem, permissions.IsAuthenticated])
 class CartItemViewset(viewsets.ModelViewSet):
     queryset = CartItem.objects.select_related("cart").all()
     model = CartItem.objects
