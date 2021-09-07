@@ -1,23 +1,26 @@
 from django.db.utils import ProgrammingError
 from django.contrib.contenttypes.models import ContentType
+from django.conf import settings
 from rest_framework import serializers
 from products.models import Product
 from products.serializers import ProductSerializer
-from social_media.models import Tag, TaggedItem,Like
-from social_media.serializers import TagSerializer, TaggedItemSerializer
-
+from social_media.models import Tag, TaggedItem,Like, Comment
+from social_media.serializers import TagSerializer, TaggedItemSerializer, CommentSerializer
+from customers.serializers import CustomerSerializer
+from typing import List
 
 # try:
 #     product_content_type = ContentType.objects.get_for_model(Product)
 # except ProgrammingError:
 #     print("WARNING: We couldn't get ContentType model in database, if you are trying to migrate, don't care about this message")
-
+class CustomCommentSerializer(CommentSerializer):
+    user=CustomerSerializer(read_only=True)
 class SocialProductSerializer(ProductSerializer):
     tags = serializers.ListField(allow_empty=True,write_only=True ,child=serializers.IntegerField(min_value=1))
     likes = serializers.SerializerMethodField()
     liked_by_user = serializers.SerializerMethodField()
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
+    # comments = serializers.SerializerMethodField()
+    comments_count = serializers.SerializerMethodField()
     class Meta:  # Reason that i didn't used meta inheritance: https://github.com/encode/django-rest-framework/issues/1926#issuecomment-71819507
         model = Product
         fields = [
@@ -31,7 +34,8 @@ class SocialProductSerializer(ProductSerializer):
             'tags',
             'likes',
             'liked_by_user',
-            'user',
+            # 'comments',
+            'comments_count',
         ]
 
         extra_kwargs = {
@@ -39,7 +43,20 @@ class SocialProductSerializer(ProductSerializer):
             'tags': {'required': False}
         }
 
+    # def get_comments(self,product) -> CommentSerializer(many=True):
+    #     comments = Comment.objects.prefetch_related('reply').filter(
+    #         content_type=ContentType.objects.get_for_model(Product),
+    #         object_id=product.pk,
+    #         reply_to=None
+    #     )[:settings.COMMENT_PER_PAGE]
+    #     serializer = CommentSerializer(comments,many=True)
+    #     return serializer.data
     
+    def get_comments_count(self,product)->int:
+        return Comment.objects.filter(
+            content_type=ContentType.objects.get_for_model(Product),
+            object_id=product.pk,
+        ).count()
     def get_likes(self,product,*args,**kwargs)->int:
         likes_count = Like.objects.filter(
             content_type=ContentType.objects.get_for_model(Product),
@@ -50,7 +67,6 @@ class SocialProductSerializer(ProductSerializer):
 
     def get_liked_by_user(self,product,*args,**kwargs)->bool:
         user=self.context['request'].user
-        print(user)
         is_liked=False
         if user and user.is_authenticated:
             user_like = Like.objects.filter(

@@ -72,6 +72,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+COMMENT_PER_PAGE = 6
 ROOT_URLCONF = 'onlineshop.urls'
 
 TEMPLATES = [
