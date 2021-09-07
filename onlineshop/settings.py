@@ -101,8 +101,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'onlineshop',
-        'HOST':'localhost',
-        'USER':"root",
+        'HOST':config("DB_HOST"),
+        'USER':config("DB_USER"),
+        'PASSWORD':config("DB_PASSWORD"),
     }
 }
 
