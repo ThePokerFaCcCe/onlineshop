@@ -56,6 +56,22 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS':"drf_spectacular.openapi.AutoSchema"
 }
 
+DJOSER = {
+    'USER_CREATE_PASSWORD_RETYPE':True,
+    'SET_PASSWORD_RETYPE':True,
+    'PASSWORD_RESET_CONFIRM_RETYPE':True,
+    'SERIALIZERS':{
+        'user':"customers.serializers.CustomerSerializer",
+        'user_create_password_retype':"customers.serializers.CustomerCreateSerializer",
+        'user_delete':"customers.serializers.CustomerDeleteSerializer",
+        'current_user':"customers.serializers.CustomerSerializer",
+    },
+    'PERMISSIONS':{
+        "user_list":['rest_framework.permissions.IsAdminUser'],
+        'user_delete':['rest_framework.permissions.IsAdminUser'],
+    }
+}
+
 INTERNAL_IPS = [ # debug tool
     '127.0.0.1',
 ]
