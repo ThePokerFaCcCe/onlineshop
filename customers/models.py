@@ -7,6 +7,8 @@ from django.db.models.fields.related import ForeignKey
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+class Messages:
+    INVALID_USERNAME="Username can have [A-Z, a-z, 0-9, _] chars only."
 
 class CustomerManager(BaseUserManager):
     def create_user(self, username, password=None, *args, **kwargs):
@@ -52,7 +54,7 @@ class CustomerManager(BaseUserManager):
 
 
 class Customer(AbstractBaseUser):
-    username = CharField(max_length=120, unique=True, validators=[RegexValidator('^[a-zA-z0-9_]+$')])
+    username = CharField(max_length=120, unique=True, validators=[RegexValidator('^[a-zA-z0-9_]+$',message=Messages.INVALID_USERNAME),MinLengthValidator(5)])
     email = EmailField(verbose_name='Email address', unique=True, max_length=100, null=True, blank=True)
     first_name = CharField(max_length=120, null=True, blank=True)
     last_name = CharField(max_length=120, null=True, blank=True)
@@ -80,20 +82,20 @@ class Customer(AbstractBaseUser):
     def get_short_name(self):
         return self.last_name or self.first_name or self.username or self.email
 
-    def has_perm(self, perm, obj=None):
+    def has_perm(self, perm, obj=None) -> bool:
         "Does the user have a specific permission?"
         return True
 
-    def has_module_perms(self, app_label):
+    def has_module_perms(self, app_label) -> bool:
         "Does the user have permissions to view the app `app_label`?"
         return True
 
     @property
-    def is_staff(self):
+    def is_staff(self) -> bool:
         return self.staff
 
     @property
-    def is_admin(self):
+    def is_admin(self) -> bool:
         return self.admin
 
 
