@@ -9,7 +9,6 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = [
             'pk',
             'username',
-            'email',
             'is_active',
             'is_staff',
             'is_admin'
