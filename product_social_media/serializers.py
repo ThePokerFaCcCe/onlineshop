@@ -6,7 +6,7 @@ from products.models import Product
 from products.serializers import ProductSerializer
 from social_media.models import Tag, TaggedItem,Like, Comment
 from social_media.serializers import TagSerializer, TaggedItemSerializer, CommentSerializer
-from customers.serializers import CustomerSerializer
+from customers.serializers import CustomerReadOnlySerializer
 from typing import List
 
 # try:
@@ -14,7 +14,7 @@ from typing import List
 # except ProgrammingError:
 #     print("WARNING: We couldn't get ContentType model in database, if you are trying to migrate, don't care about this message")
 class CustomCommentSerializer(CommentSerializer):
-    user=CustomerSerializer(read_only=True)
+    user=CustomerReadOnlySerializer(read_only=True)
 class SocialProductSerializer(ProductSerializer):
     tags = serializers.ListField(allow_empty=True,write_only=True ,child=serializers.IntegerField(min_value=1))
     likes = serializers.SerializerMethodField()
