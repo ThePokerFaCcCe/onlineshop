@@ -77,3 +77,16 @@ class CustomerCreateSerializer(DjoserUserCreateSerializer):
 
 class CustomerDeleteSerializer(serializers.Serializer):
     pass
+
+class CustomerToAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields=[
+            'pk',
+            'is_staff',
+            'is_admin',
+        ]
+        extra_kwargs={
+            'is_staff':{'source':'staff','required':True},
+            'is_admin':{'source':'admin','required':True},
+        }
