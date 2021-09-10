@@ -15,3 +15,9 @@ class IsAdminOrReadOnly(permissions.BasePermission):
             return True
         elif req.user.is_authenticated:
             return (req.user.is_staff or req.user.is_admin)
+
+class IsSuperUser(permissions.BasePermission):
+    def has_permission(self, req, view):
+        if req.user.is_authenticated:
+            return req.user.is_admin
+        
