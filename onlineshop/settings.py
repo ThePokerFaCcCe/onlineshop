@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'djoser',
     'debug_toolbar',
     'drf_spectacular',
+    'django_countries',
 
     'customers',
     'products',

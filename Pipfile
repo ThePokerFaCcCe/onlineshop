@@ -12,6 +12,7 @@ python-decouple = "*"
 django-debug-toolbar = "*"
 drf-spectacular = "*"
 mysqlclient = "*"
+django-countries = "*"
 
 [dev-packages]
 autopep8 = "*"
