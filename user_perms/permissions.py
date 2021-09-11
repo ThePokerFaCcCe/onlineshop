@@ -9,7 +9,6 @@ class IsOwnerOfItem(permissions.BasePermission):
             obj_user = obj.user
         elif hasattr(obj, 'customer'):
             obj_user = obj.customer
-        print(obj_user == req.user)
         return obj_user == req.user
 
 class IsAdmin(permissions.IsAdminUser): 
