@@ -1,10 +1,11 @@
-# ADD A CUSTOM URL AND: 1-SELECT USER 2-SET USER.AGE TO SOMETHING!
+# ADD A CUSTOM URL AND: 1-SELECT USER 2-SET USER.AGE TO SOMETHING! # <-This comment is too old and I won't delete it :)
 from django.db.models.base import Model
 from django.db.models.deletion import CASCADE
 from django.db.models.fields import CharField, DateTimeField, PositiveIntegerField, EmailField, BooleanField
 from django.core.validators import MaxValueValidator, MinLengthValidator, MinValueValidator, RegexValidator
 from django.db.models.fields.related import ForeignKey
-
+from django_countries import Countries
+from django_countries.fields import CountryField
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 class Messages:
@@ -100,7 +101,7 @@ class Customer(AbstractBaseUser):
 
 
 class Address(Model):
-    country = CharField(max_length=60)
+    country = CountryField(default="IR")
     city = CharField(max_length=60)
     street = CharField(max_length=255)
     postal_code = CharField(max_length=50)
