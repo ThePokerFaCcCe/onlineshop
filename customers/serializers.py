@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from djoser.serializers import UserSerializer as DjoserUserSerializer, UserCreatePasswordRetypeSerializer as DjoserUserCreateSerializer
-from .models import Customer
+from .models import Address, Customer
 
 
 class CustomerReadOnlySerializer(serializers.ModelSerializer):
@@ -8,7 +8,7 @@ class CustomerReadOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = [
-            'pk',
+            'id',
             'username',
             'is_active',
             'is_staff',
@@ -21,7 +21,7 @@ class CustomerSerializer(DjoserUserSerializer):
     class Meta:
         model = DjoserUserSerializer.Meta.model
         fields = [
-            'pk',
+            'id',
             'username',
             # 'email',
             # 'password',
@@ -61,7 +61,7 @@ class CustomerCreateSerializer(DjoserUserCreateSerializer):
     class Meta:
         model = DjoserUserCreateSerializer.Meta.model
         fields = [
-            'pk',
+            'id',
             'username',
             'password',
             'first_name',
@@ -82,7 +82,7 @@ class CustomerToAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields=[
-            'pk',
+            'id',
             'is_staff',
             'is_admin',
         ]
@@ -90,3 +90,11 @@ class CustomerToAdminSerializer(serializers.ModelSerializer):
             'is_staff':{'source':'staff','required':True},
             'is_admin':{'source':'admin','required':True},
         }
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Address
+        fields=[
+            'id',
+            '',
+        ]

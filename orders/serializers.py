@@ -19,7 +19,7 @@ class PostTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostType
         fields = [
-            'pk',
+            'id',
             'title',
             'description',
             'count_uses',
@@ -36,7 +36,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = [
-            'pk',
+            'id',
             'quantity',
             'price',
             'product',
@@ -60,7 +60,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
-            'pk',
+            'id',
             'first_name',
             'last_name',
             'phone_number',

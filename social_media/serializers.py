@@ -8,7 +8,7 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = [
-            'pk',
+            'id',
             'label'
         ]
 
@@ -19,7 +19,7 @@ class TaggedItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaggedItem
         fields = [
-            'pk',
+            'id',
             'label'
         ]
 
@@ -61,7 +61,7 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = [
-            'pk',
+            'id',
             'reply_to',
             'text',
             'hidden',

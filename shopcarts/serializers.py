@@ -15,12 +15,12 @@ User = get_user_model()
 
 class CartItemSerializer(serializers.ModelSerializer):
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
-    cart = serializers.PrimaryKeyRelatedField(queryset=Cart.objects.all().only('pk'), write_only=True)
+    cart = serializers.PrimaryKeyRelatedField(queryset=Cart.objects.all().only('id'), write_only=True)
 
     class Meta:
         model = CartItem
         fields = [
-            # 'pk',
+            # 'id',
             'cart',
             'quantity',
             'product',
@@ -48,7 +48,7 @@ class CartSerializer(serializers.ModelSerializer):
         model = Cart
 
         fields = [
-            'pk',
+            'id',
             'user',
             'products',
         ]

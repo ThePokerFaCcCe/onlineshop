@@ -6,7 +6,7 @@ class PromotionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promotion
         fields = [
-            'pk',
+            'id',
             'description',
             'discount',
         ]
@@ -21,7 +21,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = [
-            'pk',
+            'id',
             'title',
             'description',
         ]
@@ -33,7 +33,7 @@ class FeaturedProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            'pk',
+            'id',
             'title',
             'description',
             'inventory',
@@ -49,7 +49,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
         model = Category
         fields = [
-            'pk',
+            'id',
             'title',
             'description',
             'featured_product',
@@ -76,7 +76,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            'pk',
+            'id',
             'title',
             'description',
             'inventory',
@@ -102,7 +102,7 @@ class ProductSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Category
 #         fields = [
-#             'pk',
+#             'id',
 #             'title',
 #             'description',
 #             'products',

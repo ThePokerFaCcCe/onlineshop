@@ -24,7 +24,7 @@ class SocialProductSerializer(ProductSerializer):
     class Meta:  # Reason that i didn't used meta inheritance: https://github.com/encode/django-rest-framework/issues/1926#issuecomment-71819507
         model = Product
         fields = [
-            'pk',
+            'id',
             'title',
             'description',
             'inventory',
