@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django_countries.serializer_fields import CountryField
 from djoser.serializers import UserSerializer as DjoserUserSerializer, UserCreatePasswordRetypeSerializer as DjoserUserCreateSerializer
 from .models import Address, Customer
 
@@ -92,9 +93,17 @@ class CustomerToAdminSerializer(serializers.ModelSerializer):
         }
 
 class AddressSerializer(serializers.ModelSerializer):
+    country = CountryField(country_dict=True)
     class Meta:
         model=Address
         fields=[
             'id',
-            '',
+            'country',
+            'city',
+            'street',
+            'postal_code',
+            'user',
         ]
+        extra_kwargs={
+            'user':{'source':'customer','read_only':True},
+        }
