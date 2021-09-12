@@ -1,3 +1,4 @@
+start new app and create a PictureField for django model and DRF serializer
 add picture support (product pic) for product
 add picture support (profile pic) for customer
 make checkout url for orders
