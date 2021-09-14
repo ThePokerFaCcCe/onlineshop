@@ -15,10 +15,17 @@ from django.conf import settings
 SEPARATE_STR = '*'
 
 
-class PictureFileField:
-    def __init__(self, image, thumbnail):
+class PictureFileField(ImageFieldFile):
+    def __init__(self, committed: bool, image: ImageFieldFile, thumbnail: Optional[ImageFieldFile] = None):
+        super().__init__(image.instance, image.field, image.name)
         self.image = image
         self.thumbnail = thumbnail
+        self._committed = committed
+        self._has_thumbnail = True if thumbnail else False
+
+    @property
+    def has_thumbnail(self) -> bool:
+        return self._has_thumbnail
 
 
 class PictureDescriptor(ImageFileDescriptor):
@@ -30,12 +37,16 @@ class PictureDescriptor(ImageFileDescriptor):
         if isinstance(data, ImageFieldFile):
             text = data.name
             if SEPARATE_STR not in text:
-                return data
+                return PictureFileField(
+                    image=self._create_file(instance, data.field, text),
+                    committed=data._committed
+                )
 
             img, thumb = text.split(SEPARATE_STR, 1)
             return PictureFileField(
                 image=self._create_file(instance, data.field, img),
-                thumbnail=self._create_file(instance, data.field, thumb)
+                thumbnail=self._create_file(instance, data.field, thumb),
+                committed=data._committed
             )
 
         return data
@@ -46,22 +57,27 @@ class PictureField(ImageField):
     Custom ImageField with thumbnail support
 
     ---    
-    usage
-    -----
-    when `make_thumbnail = True`:
+    attributes
+    ----------
+    >>> field
+    < PictureFileField ...> 
     >>> field.image
     < ImageFieldFile ...>
     >>> field.thumbnail
-    < ImageFieldFile ...>
-    
+    < ImageFieldFile ...> | None
+    >>> field.has_thumbnail
+    bool
+
+    other `field` attributes are same as `field.image` attributes
+
     """
     descriptor_class = PictureDescriptor
-    
-    def _upload_to_path(self,instance, filename,*args,**kwargs):
+
+    def _upload_to_path(self, instance, filename, *args, **kwargs):
         now = datetime.now()
         return "{model_name}/{year}/{month}/{day}/{hour}-{minute}-{microsecond}{extension}".format(
-            
-            model_name = instance.__class__.__name__,
+
+            model_name=instance.__class__.__name__,
             year=now.year,
             month=now.month,
             day=now.day,
@@ -71,7 +87,7 @@ class PictureField(ImageField):
             extension=os.path.splitext(filename)[1],
         )
 
-    def __init__(self, upload_to='',use_upload_to_func:bool=False, make_thumbnail: bool = False,
+    def __init__(self, upload_to='', use_upload_to_func: bool = False, make_thumbnail: bool = False,
                  verbose_name: Optional[str] = None, name: Optional[str] = None,
                  width_field: Optional[str] = None, height_field: Optional[str] = None,
                  thumbnail_size: Tuple[int, int] = (200, 200),
@@ -90,6 +106,7 @@ class PictureField(ImageField):
         super().__init__(upload_to=upload_to, verbose_name=verbose_name, name=name, width_field=width_field, height_field=height_field, **kwargs)
 
     def pre_save(self, model_instance, add):
+        print(getattr(model_instance, self.attname))
         file = super().pre_save(model_instance, add)
         if self.make_thumbnail:
             thumb_path = self._make_thumbnail(file)
