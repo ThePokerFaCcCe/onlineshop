@@ -1,4 +1,7 @@
-start new app and create a PictureField for django model and DRF serializer
+add PictureField for serializers
+find a way for use PictureField when we have multiple pics.(maybe Generic Relationship or ForeignKey in model)
+fix docs problem with PictureField. (it doesn't shows file input for field)
+---------------------------------------------------------------------------
 add picture support (product pic) for product
 add picture support (profile pic) for customer
 make checkout url for orders
