@@ -82,7 +82,7 @@ class PictureField(ImageField):
 
     def _upload_to_path(self, instance, filename, *args, **kwargs):
         now = datetime.now()
-        return "{model_name}/{year}/{month}/{day}/{hour}-{minute}-{microsecond}{extension}".format(
+        return "uploads/{model_name}/{year}/{month}/{day}/{hour}-{minute}-{microsecond}{extension}".format(
 
             model_name=instance.__class__.__name__,
             year=now.year,
@@ -105,7 +105,7 @@ class PictureField(ImageField):
         -----------
         use_upload_to_func : bool
             A function that creates path for files.
-            {model_name}/{year}/{month}/{day}/{hour}-{minute}-{microsecond}{extension}
+            uploads/{model_name}/{year}/{month}/{day}/{hour}-{minute}-{microsecond}{extension}
         """
         self.thumbnail_size, self.make_thumbnail = thumbnail_size, make_thumbnail
         if use_upload_to_func:
