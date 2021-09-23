@@ -5,7 +5,7 @@ I think this is a very bad way to do that but it works :))
 import os
 from typing import Any, Optional, Tuple
 from django.db.models import ImageField
-from django.db.models.fields.files import ImageFieldFile, ImageFileDescriptor
+from django.db.models.fields.files import ImageFieldFile, ImageFileDescriptor, FieldFile
 from PIL import Image
 from io import BytesIO
 import os
@@ -16,12 +16,14 @@ SEPARATE_STR = '*'
 
 
 class PictureFileField(ImageFieldFile):
-    def __init__(self, committed: bool, image: ImageFieldFile, thumbnail: Optional[ImageFieldFile] = None):
+    def __init__(self, committed: bool, image: ImageFieldFile, thumbnail: Optional[ImageFieldFile] = None, _file=None,name=None):
         super().__init__(image.instance, image.field, image.name)
         self.image = image
         self.thumbnail = thumbnail
         self._committed = committed
         self._has_thumbnail = True if thumbnail else False
+        self._file = _file
+        self.name=name or image.name
 
     @property
     def has_thumbnail(self) -> bool:
@@ -35,11 +37,16 @@ class PictureDescriptor(ImageFileDescriptor):
     def __get__(self, instance, cls=None):
         data = super().__get__(instance, cls)
         if isinstance(data, ImageFieldFile):
+            #print(data.__dict__)
             text = data.name
-            if SEPARATE_STR not in text:
+            # if not isinstance(text,str):
+            #     return data
+            if not isinstance(text,str) or SEPARATE_STR not in text:
                 return PictureFileField(
                     image=self._create_file(instance, data.field, text),
-                    committed=data._committed
+                    committed=data._committed,
+                    _file=data._file,
+                    name=data.name
                 )
 
             img, thumb = text.split(SEPARATE_STR, 1)
@@ -106,15 +113,17 @@ class PictureField(ImageField):
         super().__init__(upload_to=upload_to, verbose_name=verbose_name, name=name, width_field=width_field, height_field=height_field, **kwargs)
 
     def pre_save(self, model_instance, add):
-        print(getattr(model_instance, self.attname))
+        #print("[PRE SAVE]  -  ",getattr(model_instance, self.attname).__dict__)
         file = super().pre_save(model_instance, add)
-        if self.make_thumbnail:
+        if self.make_thumbnail and file.name:
             thumb_path = self._make_thumbnail(file)
             file.name = SEPARATE_STR.join([file.name, thumb_path])
             setattr(model_instance, self.attname, file)
         return file
 
     def _make_thumbnail(self, image):
+        if not image:
+            return ''
         img_relpath = os.path.relpath(image.path, settings.BASE_DIR)
         img_dir, img_name = os.path.split(img_relpath)
 
@@ -141,5 +150,5 @@ class PictureField(ImageField):
         return thumb_path_no_media_root
 
     def get_prep_value(self, value: Any) -> Any:
-        # print('[PRE] - ', value)
+        ## print('[PRE] - ', value)
         return super().get_prep_value(value)
