@@ -1,4 +1,5 @@
-
+from django.conf.urls.static import static
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path,include
 import debug_toolbar
@@ -20,4 +21,4 @@ urlpatterns = [
     path('api/v1/',include('shopcarts.urls')),
     path('api/v1/',include('social_media.urls')),
     # path('api/v1/',include('')),
-]
+] + static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)

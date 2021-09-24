@@ -3,12 +3,13 @@ from rest_framework import permissions
 
 class IsOwnerOfItem(permissions.BasePermission):
     def has_object_permission(self, req, view, obj):
-        obj_user = None
+        obj_user = obj
 
         if hasattr(obj, 'user'):
             obj_user = obj.user
         elif hasattr(obj, 'customer'):
             obj_user = obj.customer
+
         return obj_user == req.user
 
 class IsAdmin(permissions.IsAdminUser): 
