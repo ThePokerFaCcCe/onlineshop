@@ -57,7 +57,9 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_SCHEMA_CLASS':"drf_spectacular.openapi.AutoSchema"
 }
-
+SPECTACULAR_SETTINGS = {
+    'COMPONENT_SPLIT_REQUEST': True,
+}
 DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE':True,
     'SET_PASSWORD_RETYPE':True,

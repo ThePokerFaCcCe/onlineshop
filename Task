@@ -1,8 +1,6 @@
-find a way for use PictureField when we have multiple pics.(maybe Generic Relationship or ForeignKey in model)
-fix docs problem with PictureField. (it doesn't shows file input for field)
----------------------------------------------------------------------------
 add picture support (product pic) for product
 add picture support (profile pic) for customer
 make checkout url for orders
 learn and add payment method for orders(I have no idea how they work! so i think it's the hard part)
 better way to showing tag and comment for product(it isn't important for now!)
+picturic: use PictureField when we have multiple pics(kwarg: multiple=True on field) # for now I will use ForeignKey

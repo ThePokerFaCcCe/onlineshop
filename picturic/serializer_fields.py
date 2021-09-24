@@ -1,7 +1,9 @@
 from rest_framework.settings import api_settings
 from rest_framework.fields import ImageField
+from drf_spectacular.utils import extend_schema_field
+from drf_spectacular.types import OpenApiTypes
 
-
+@extend_schema_field(OpenApiTypes.BINARY)
 class PictureField(ImageField):
     def _make_url(self, value):
         try:
@@ -29,3 +31,6 @@ class PictureField(ImageField):
             'image': self._make_data(value.image),
             'thumbnail': self._make_data(value.thumbnail),
         }
+    def to_internal_value(self, data):
+        # print('data: ',data.__dict__) # For future usage
+        return super().to_internal_value(data)
