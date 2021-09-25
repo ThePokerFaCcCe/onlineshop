@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django_countries.serializer_fields import CountryField
 from djoser.serializers import UserSerializer as DjoserUserSerializer, UserCreatePasswordRetypeSerializer as DjoserUserCreateSerializer
+
+from picturic.serializer_fields import PictureField
 from .models import Address, Customer
 
 
@@ -30,6 +32,7 @@ class CustomerSerializer(DjoserUserSerializer):
             'last_name',
             'phone_number',
             'age',
+            'profile_image',
             'is_active',
             'is_staff',
             'is_admin',
@@ -39,7 +42,8 @@ class CustomerSerializer(DjoserUserSerializer):
             # 'password': {'write_only': True},
             # 'email': {'write_only': True},
             'is_active': {'read_only': True},
-            'age': {'required': False}
+            'profile_image': {'read_only': True},
+            'age': {'required': False},
         }
 
     def update(self, instance, validated_data):
@@ -49,6 +53,16 @@ class CustomerSerializer(DjoserUserSerializer):
 
         return super().update(instance, validated_data)
 
+class CustomerProfileSerializer(serializers.ModelSerializer):
+    profile_image=PictureField(required=True)
+    class Meta:
+        model=Customer
+        fields=[
+            'pk',
+            'profile_image',
+        ]
+    
+    
 
 class CustomerCreateSerializer(DjoserUserCreateSerializer):
 
@@ -70,9 +84,11 @@ class CustomerCreateSerializer(DjoserUserCreateSerializer):
             'email',
             'phone_number',
             'age',
+            'profile_image',
         ]
         extra_kwargs = {
             'email': {'write_only': True},
+            'profile_image': {'read_only': True},
         }
 
 

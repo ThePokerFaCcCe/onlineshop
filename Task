@@ -1,5 +1,4 @@
 add picture support (product pic) for product
-add picture support (profile pic) for customer
 make checkout url for orders
 learn and add payment method for orders(I have no idea how they work! so i think it's the hard part)
 better way to showing tag and comment for product(it isn't important for now!)

@@ -8,6 +8,9 @@ from django_countries import Countries
 from django_countries.fields import CountryField
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+from picturic.fields import PictureField
+
+
 class Messages:
     INVALID_USERNAME="Username can have [A-Z, a-z, 0-9, _] chars only."
 
@@ -61,7 +64,7 @@ class Customer(AbstractBaseUser):
     last_name = CharField(max_length=120, null=True, blank=True)
     phone_number = CharField(max_length=32, validators=[MinLengthValidator(4)], null=True, blank=True)
     age = PositiveIntegerField(validators=[MinValueValidator(8), MaxValueValidator(120)], null=True, blank=True)
-
+    profile_image = PictureField(use_upload_to_func=True,make_thumbnail=True,blank=True,default='defaults/customer_profile/cat.jpg')
     is_active = BooleanField(default=True)
     staff = BooleanField(default=False)  # a admin user; non super-user
     admin = BooleanField(default=False)  # a superuser
