@@ -6,11 +6,9 @@ import os
 from typing import Any, Optional, Tuple
 from django.db.models import ImageField
 from django.db.models.fields.files import ImageFieldFile, ImageFileDescriptor, FieldFile
-from PIL import Image
-from io import BytesIO
-import os
-from datetime import datetime
 from django.conf import settings
+from PIL import Image
+from .utils import upload_to_path
 
 SEPARATE_STR = '*'
 
@@ -79,21 +77,7 @@ class PictureField(ImageField):
 
     """
     descriptor_class = PictureDescriptor
-
-    def _upload_to_path(self, instance, filename, *args, **kwargs):
-        now = datetime.now()
-        return "uploads/{model_name}/{year}/{month}/{day}/{hour}-{minute}-{microsecond}{extension}".format(
-
-            model_name=instance.__class__.__name__,
-            year=now.year,
-            month=now.month,
-            day=now.day,
-            hour=now.hour,
-            minute=now.minute,
-            microsecond=now.microsecond,
-            extension=os.path.splitext(filename)[1],
-        )
-
+    _upload_to_path = upload_to_path
     def __init__(self, upload_to='', use_upload_to_func: bool = False, make_thumbnail: bool = False,
                  verbose_name: Optional[str] = None, name: Optional[str] = None,
                  width_field: Optional[str] = None, height_field: Optional[str] = None,
@@ -105,7 +89,6 @@ class PictureField(ImageField):
         -----------
         use_upload_to_func : bool
             A function that creates path for files.
-            uploads/{model_name}/{year}/{month}/{day}/{hour}-{minute}-{microsecond}{extension}
         """
         self.thumbnail_size, self.make_thumbnail = thumbnail_size, make_thumbnail
         if use_upload_to_func:
