@@ -1,15 +1,21 @@
 # 00/06/21
 
 from rest_framework import serializers
-from .models import PictureModel
+from django.contrib.contenttypes.models import ContentType
+from .models import PictureGeneric
 from .serializer_fields import PictureField
 
-class PictureModelSerializer(serializers.ModelSerializer):
-    pic = PictureField()
+class PictureGenericSerializer(serializers.ModelSerializer):
+    file = PictureField()
     class Meta:
-        model = PictureModel
+        model = PictureGeneric
         fields=[
             'id',
-            'pic',
+            'file',
         ]
+
+    def create(self, validated_data):
+        obj = self.context['object']
+        content_type = ContentType.objects.get_for_model(obj.__class__)
+        return super().create({"object_id":obj.pk,"content_type":content_type,**validated_data})
 
