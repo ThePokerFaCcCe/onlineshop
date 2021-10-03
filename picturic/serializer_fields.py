@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.settings import api_settings
-from rest_framework.fields import ImageField
+from rest_framework.fields import Field, ImageField
 from drf_spectacular.utils import extend_schema_field, extend_schema_serializer, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 
@@ -47,3 +47,21 @@ class PictureField(ImageField):
     def to_internal_value(self, data):
         # print('data: ',data.__dict__) # For future usage
         return super().to_internal_value(data)
+
+@extend_schema_field({'type':'array','items':{'type': "string", 'format': 'binary'},
+                      'example': [
+                          {
+                          "image": {"url": "string", "name": "string"},
+                          "thumbnail": {"url": "string", "name": "string"}
+                          },
+                      ]
+})
+class MultiplePictureField(Field):
+    """
+    Use this field when you want add multiple pictures in Swagger docs(with `drf_spectacular`).
+    It's just a `Field` with advanced schema for `drf_spectacular`
+    and you have to handle image saving in your view
+    """
+
+    def to_internal_value(self,data):
+        return data
