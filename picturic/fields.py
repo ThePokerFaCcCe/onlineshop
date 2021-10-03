@@ -26,6 +26,15 @@ class PictureFileField(ImageFieldFile):
     @property
     def has_thumbnail(self) -> bool:
         return self._has_thumbnail
+    def delete(self, save = False) -> None:
+        try:
+            self.image.delete(save=save)
+        except:
+            pass
+        try:
+            self.thumbnail.delete(save=save)
+        except:
+            pass
 
 
 class PictureDescriptor(ImageFileDescriptor):
@@ -93,6 +102,7 @@ class PictureField(ImageField):
         self.thumbnail_size, self.make_thumbnail = thumbnail_size, make_thumbnail
         if use_upload_to_func:
             upload_to = self._upload_to_path
+        kwargs['max_length']=9999
         super().__init__(upload_to=upload_to, verbose_name=verbose_name, name=name, width_field=width_field, height_field=height_field, **kwargs)
 
     def pre_save(self, model_instance, add):
