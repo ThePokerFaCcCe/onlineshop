@@ -1,4 +1,6 @@
+add pagination and filtering
 make checkout url for orders
+create schema for category, order, shopcart, product, ...
 learn and add payment method for orders(I have no idea how they work! so i think it's the hard part)
 better way to showing tag and comment for product(it isn't important for now!)
 picturic: use PictureField when we have multiple pics(kwarg: multiple=True on field) # for now I will use ForeignKey
