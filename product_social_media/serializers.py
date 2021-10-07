@@ -1,14 +1,15 @@
-from django.db.utils import ProgrammingError
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
+from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 from rest_framework import serializers
+from product_social_media.schemas import SOCIAL_PRODUCT_RESULT_LIST, SOCIAL_PRODUCT_RESULT_RETRIEVE
 from products.models import Product
 from products.serializers import ProductSerializer
 from social_media.models import Tag, TaggedItem, Like, Comment
 from social_media.serializers import TagSerializer, TaggedItemSerializer, CommentSerializer
 from customers.serializers import CustomerReadOnlySerializer
 from typing import List
-from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
+
 # try:
 #     product_content_type = ContentType.objects.get_for_model(Product)
 # except ProgrammingError:
@@ -19,39 +20,7 @@ class CustomCommentSerializer(CommentSerializer):
     user = CustomerReadOnlySerializer(read_only=True)
 
 
-@extend_schema_serializer(examples=[OpenApiExample(
-    name='Example',
-    response_only=True,
-    value={
-        "id": 0,
-        "title": "string",
-        "description": "string",
-        "pictures": [
-            {
-                'id':0,
-                "file":{
-                    "image": {
-                        "url": "string",
-                        "name": "string"
-                    },
-                    "thumbnail": {
-                        "url": "string",
-                        "name": "string"
-                    }
-                }
-            }
-        ],
-        "inventory": 4294967295,
-        "price": 4294967295,
-        "category": 0,
-        "promotions": [
-            0
-        ],
-        "likes": 0,
-        "liked_by_user": True,
-        "comments_count": 0
-    }
-)])
+@extend_schema_serializer(examples=[SOCIAL_PRODUCT_RESULT_RETRIEVE,SOCIAL_PRODUCT_RESULT_LIST])
 class SocialProductSerializer(ProductSerializer):
     tags = serializers.ListField(allow_empty=True, write_only=True,required=False, child=serializers.IntegerField(min_value=1))
     likes = serializers.SerializerMethodField()

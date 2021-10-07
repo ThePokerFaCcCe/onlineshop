@@ -1,13 +1,16 @@
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import QuerySet
+from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
 from picturic.serializer_fields import MultiplePictureField
+from products.schemas import CATEGORY_RESPONSE_RETRIEVE, CATEGORY_RESPONSE_LIST, PRODUCT_RESPONSE_LIST, PRODUCT_RESPONSE_RETRIEVE, PROMOTION_REQUEST, PROMOTION_RESPONSE_RETRIEVE, PROMOTION_RESPONSE_LIST
 from .models import Product, Category, Promotion
 from picturic.serializers import PictureGenericSerializer
 from picturic.models import PictureGeneric
 
 
+@extend_schema_serializer(examples=[PROMOTION_RESPONSE_RETRIEVE, PROMOTION_RESPONSE_LIST, PROMOTION_REQUEST])
 class PromotionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promotion
@@ -48,6 +51,7 @@ class FeaturedProductSerializer(serializers.ModelSerializer):
         ]
 
 
+@extend_schema_serializer(examples=[CATEGORY_RESPONSE_RETRIEVE, CATEGORY_RESPONSE_LIST])
 class CategorySerializer(serializers.ModelSerializer):
     featured_product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), required=False, allow_null=True)
 
@@ -73,6 +77,7 @@ class CategorySerializer(serializers.ModelSerializer):
         return representation
 
 
+@extend_schema_serializer(examples=[PRODUCT_RESPONSE_RETRIEVE, PRODUCT_RESPONSE_LIST])
 class ProductSerializer(serializers.ModelSerializer):
     promotions = serializers.PrimaryKeyRelatedField(queryset=Promotion.objects.all(), many=True, required=False, allow_null=True)
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
@@ -95,7 +100,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'description': {'required': False},
         }
 
-    def _get_pics(self,instance)->QuerySet:
+    def _get_pics(self, instance) -> QuerySet:
         pics_queryset = PictureGeneric.objects.filter(
             content_type=ContentType.objects.get_for_model(instance.__class__),
             object_id=instance.pk
@@ -122,8 +127,8 @@ class ProductSerializer(serializers.ModelSerializer):
         return product
 
     def update(self, instance, validated_data):
-        pictures: PictureGenericSerializer = validated_data.pop('pictures',None)
-        product=super().update(instance, validated_data)
+        pictures: PictureGenericSerializer = validated_data.pop('pictures', None)
+        product = super().update(instance, validated_data)
         print('update')
         if pictures:
             old_pictures = self._get_pics(product)
@@ -143,4 +148,3 @@ class ProductSerializer(serializers.ModelSerializer):
         representation['pictures'] = PictureGenericSerializer(self._get_pics(instance), many=True, context=self.context).data
 
         return representation
-

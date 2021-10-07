@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'product_social_media',
     'user_perms',
     'picturic',
+    'utils',
     # '',
 ]
 

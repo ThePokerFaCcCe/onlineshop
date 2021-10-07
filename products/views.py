@@ -4,6 +4,8 @@ from rest_framework import generics, permissions, viewsets, status
 from rest_framework.decorators import permission_classes, action, api_view
 from rest_framework.response import Response
 
+from utils.paginations import DefaultLimitOffsetPagination
+
 from .models import Promotion, Product, Category
 from .serializers import CategorySerializer, ProductSerializer, PromotionSerializer
 from user_perms.permissions import IsAdminOrReadOnly
@@ -37,6 +39,7 @@ class PromotionViewset(viewsets.ModelViewSet):
 class ProductViewset(viewsets.ModelViewSet):
     queryset = Product.objects.prefetch_related("promotions").select_related('category').all()
     serializer_class = ProductSerializer
+    pagination_class = DefaultLimitOffsetPagination
 
 
 # TEST
