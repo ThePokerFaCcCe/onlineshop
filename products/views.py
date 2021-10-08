@@ -3,9 +3,12 @@ from django.http import JsonResponse, HttpResponse
 from rest_framework import generics, permissions, viewsets, status
 from rest_framework.decorators import permission_classes, action, api_view
 from rest_framework.response import Response
+from rest_framework.filters import SearchFilter,OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from utils.filters import OrderingFilterWithSchema
 
 from utils.paginations import DefaultLimitOffsetPagination
-
+from products.filters import ProductFilter
 from .models import Promotion, Product, Category
 from .serializers import CategorySerializer, ProductSerializer, PromotionSerializer
 from user_perms.permissions import IsAdminOrReadOnly
@@ -38,8 +41,12 @@ class PromotionViewset(viewsets.ModelViewSet):
 @permission_classes([IsAdminOrReadOnly])
 class ProductViewset(viewsets.ModelViewSet):
     queryset = Product.objects.prefetch_related("promotions").select_related('category').all()
+    filter_backends=[DjangoFilterBackend,SearchFilter,OrderingFilterWithSchema]
     serializer_class = ProductSerializer
     pagination_class = DefaultLimitOffsetPagination
+    filterset_class = ProductFilter
+    search_fields = ['title','description']
+    ordering_fields=['updated_at','title','category_id','price']
 
 
 # TEST
