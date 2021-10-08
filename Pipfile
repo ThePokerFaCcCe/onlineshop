@@ -13,6 +13,8 @@ django-debug-toolbar = "*"
 drf-spectacular = "*"
 mysqlclient = "*"
 django-countries = "*"
+drf-nested-routers = "*"
+django-filter = "*"
 
 [dev-packages]
 autopep8 = "*"

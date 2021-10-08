@@ -33,7 +33,9 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'drf_spectacular',
     'django_countries',
-
+    'django_filters',
+    'rest_framework_nested',
+    
     'customers',
     'products',
     'shopcarts',
