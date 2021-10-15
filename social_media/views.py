@@ -59,7 +59,9 @@ class CommentViewset(mixins.RetrieveModelMixin,
 
 
 class ListCreateCommentsViewset(ListModelMixin, CreateModelMixin, GenericViewSet):
-    '''You should set `content_type` and `object_id_lookup_url` in your subclass'''
+    # You should set `content_type` 
+    # and `object_id_lookup_url` 
+    # in your subclasses
     content_type: ContentType = None
     object_id_lookup_url: str = None
 
