@@ -57,7 +57,7 @@ class CartViewset(viewsets.ModelViewSet):
 
 
 class CartItemViewset(viewsets.ModelViewSet):
-    queryset = CartItem.objects.select_related("cart").all()
+    queryset = CartItem.objects.select_related("cart",'product').all()
     model = CartItem.objects
     serializer_class = CartItemSerializer
 

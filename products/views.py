@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.models import ContentType
+from django.db.models.expressions import RawSQL
 from django.http import JsonResponse, HttpResponse
 
 from rest_framework import generics, permissions, viewsets, status
@@ -5,6 +7,7 @@ from rest_framework.decorators import permission_classes, action, api_view
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from picturic.models import PictureGeneric
 from utils.filters import OrderingFilterWithSchema
 
 from utils.paginations import DefaultLimitOffsetPagination
@@ -38,9 +41,31 @@ class PromotionViewset(viewsets.ModelViewSet):
     serializer_class = PromotionSerializer
 
 
+                #     Prefetch(lookup='pictures',
+                #              queryset=PictureGeneric.objects.filter(
+                #                 content_type=ContentType.objects.get_for_model(Product),
+                #                 object_id=product_id
+                #              )
+                #    )
+
+                # .extra(select={
+                #     'pictures': """
+                            # SELECT id,file
+                            # FROM picturic_picturegeneric
+                            # WHERE
+                            # content_type_id=%s AND
+                            # object_id=%s
+                #             """
+                #     },
+                #     # select_params=[ContentType.objects.get_for_model(Product).id,product_id],
+                #     select_params=[12,1],
+                # )
+
+                # .annotate(pictures = RawSQL('SELECT * FROM picturic_picturegeneric WHERE content_type_id=%s',[12]) )\
+                
 @permission_classes([IsAdminOrReadOnly])
 class ProductViewset(viewsets.ModelViewSet):
-    queryset = Product.objects.prefetch_related("promotions").select_related('category').all()
+    queryset = Product.objects.prefetch_related("promotions",'pictures').select_related('category').all()
     filter_backends=[DjangoFilterBackend,SearchFilter,OrderingFilterWithSchema]
     serializer_class = ProductSerializer
     pagination_class = DefaultLimitOffsetPagination

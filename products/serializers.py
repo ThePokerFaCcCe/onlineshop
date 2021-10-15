@@ -100,14 +100,6 @@ class ProductSerializer(serializers.ModelSerializer):
             'description': {'required': False},
         }
 
-    def _get_pics(self, instance) -> QuerySet:
-        pics_queryset = PictureGeneric.objects.filter(
-            content_type=ContentType.objects.get_for_model(instance.__class__),
-            object_id=instance.pk
-        )
-
-        return pics_queryset
-
     def validate_pictures(self, *args):
         pics = self.context['request'].FILES.getlist("pictures")
 
@@ -129,10 +121,8 @@ class ProductSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         pictures: PictureGenericSerializer = validated_data.pop('pictures', None)
         product = super().update(instance, validated_data)
-        print('update')
         if pictures:
-            old_pictures = self._get_pics(product)
-            # old_pictures.delete() if old_pictures else None
+            old_pictures = instance.pictures.all()
             if old_pictures:
                 for pic in old_pictures:
                     pic.file.delete()
@@ -145,6 +135,6 @@ class ProductSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['promotions'] = PromotionSerializer(instance=instance.promotions, many=True).data
         representation['category'] = ProductCategorySerializer(instance=instance.category).data
-        representation['pictures'] = PictureGenericSerializer(self._get_pics(instance), many=True, context=self.context).data
 
+        representation['pictures'] = PictureGenericSerializer(instance.pictures, many=True, context=self.context).data
         return representation

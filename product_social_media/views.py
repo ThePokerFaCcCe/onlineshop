@@ -11,21 +11,21 @@ from products.models import Product
 from user_perms.permissions import IsAdminOrReadOnly
 from social_media.models import Like, Comment
 from social_media.serializers import LikeSerializer
-
+from utils import content_types
 
 @permission_classes([IsAdminOrReadOnly])
 class SocialProductViewset(ProductViewset):
+    queryset = ProductViewset.queryset.prefetch_related('tags__tag','comments','likes').all()
     serializer_class = SocialProductSerializer
 
     @action(detail=True, methods=['post', 'get'], permission_classes=[permissions.IsAuthenticatedOrReadOnly], serializer_class=LikeSerializer)
     def like(self, request, pk):
         product = self.get_object()
-        content_type = ContentType.objects.get_for_model(Product)
         liked_by_user = False
 
         if request.method == 'POST':
             user_like, created = Like.objects.get_or_create(
-                content_type=content_type,
+                content_type=content_types.PRODUCT,
                 object_id=product.pk,
                 user=request.user
             )
@@ -35,7 +35,7 @@ class SocialProductViewset(ProductViewset):
             else:
                 user_like.delete()
 
-        serializer = self.get_serializer_class()(data=request.data, context={"product": product, 'content_type': content_type, 'liked_by_user': liked_by_user})
+        serializer = self.get_serializer_class()(data=request.data, context={"product": product, 'content_type': content_types.PRODUCT, 'liked_by_user': liked_by_user})
         serializer.is_valid(raise_exception=True)
 
         return Response(serializer.data)
@@ -43,13 +43,12 @@ class SocialProductViewset(ProductViewset):
     @action(detail=True, methods=['get'], url_path='comments/(?P<page>\d+)', serializer_class=CustomCommentSerializer)
     def comments_list(self, request, pk, page):
         product = self.get_object()
-        content_type = ContentType.objects.get_for_model(Product)
 
         from_index = settings.COMMENT_PER_PAGE * (int(page)-1)
         to_index = from_index + settings.COMMENT_PER_PAGE
 
         comments = Comment.objects.prefetch_related('reply').filter(
-            content_type=content_type,
+            content_type=content_types.PRODUCT,
             object_id=product.pk,
             reply_to=None
         )[from_index:to_index]
@@ -63,9 +62,10 @@ class SocialProductViewset(ProductViewset):
     @action(detail=True, methods=['post'], url_path="comments", serializer_class=CustomCommentSerializer, permission_classes=[permissions.IsAuthenticated])
     def comments_create(self, request, pk):
         product = self.get_object()
-        content_type = ContentType.objects.get_for_model(Product)
 
         serializer = self.get_serializer_class()(data=request.data, context={'no-reply': True, 'request': request})
         serializer.is_valid(raise_exception=True)
-        serializer.save(object_id=product.pk, content_type=content_type)
+        serializer.save(object_id=product.pk, content_type=content_types.PRODUCT)
         return Response(serializer.data)
+
+

@@ -4,9 +4,9 @@ from .views import CategoryViewset, ProductViewset, PromotionViewset,userinfo
 # from .views import CategoryList, CategoryDetail, PromotionDetail, PromotionList, ProductDetail, ProductList
 
 router = routers.DefaultRouter()
-router.register('category', CategoryViewset)
-router.register('product', ProductViewset)
-router.register('promotion', PromotionViewset)
+router.register('category', CategoryViewset,basename='category')
+router.register('product', ProductViewset,basename='product')
+router.register('promotion', PromotionViewset,basename='promotion')
 
 urlpatterns = [
     path('', include(router.urls)),

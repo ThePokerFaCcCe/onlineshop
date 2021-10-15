@@ -20,7 +20,7 @@ def all_methods(*args, **kwargs):
 
 @permission_classes([IsAdminOrReadOnly])
 class PostTypeViewset(viewsets.ModelViewSet):
-    queryset = PostType.objects.all()
+    queryset = PostType.objects.prefetch_related('orders').all()
     serializer_class = PostTypeSerializer
 
 
