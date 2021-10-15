@@ -13,6 +13,8 @@ REQUEST_DEFAULT = {
     'name': 'Request',
     'request_only': True,
 }
+
+
 def convert_type_to_value(vtype) -> Any:
     if isinstance(vtype, type):
         if issubclass(vtype, bool):
@@ -62,8 +64,8 @@ def schema_generator(data: dict):
     return data
 
 
-PAGINATION_DEFAULT=schema_generator({
-            "count": int,
-            "next": str,
-            "previous": str,
-        })
+PAGINATION_DEFAULT = schema_generator({
+    "count": int,
+    "next": "http://api.example.org/accounts/?offset=400&limit=100",
+    "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+})
