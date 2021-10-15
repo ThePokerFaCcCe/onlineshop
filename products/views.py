@@ -40,29 +40,6 @@ class PromotionViewset(viewsets.ModelViewSet):
     queryset = Promotion.objects.all()
     serializer_class = PromotionSerializer
 
-
-                #     Prefetch(lookup='pictures',
-                #              queryset=PictureGeneric.objects.filter(
-                #                 content_type=ContentType.objects.get_for_model(Product),
-                #                 object_id=product_id
-                #              )
-                #    )
-
-                # .extra(select={
-                #     'pictures': """
-                            # SELECT id,file
-                            # FROM picturic_picturegeneric
-                            # WHERE
-                            # content_type_id=%s AND
-                            # object_id=%s
-                #             """
-                #     },
-                #     # select_params=[ContentType.objects.get_for_model(Product).id,product_id],
-                #     select_params=[12,1],
-                # )
-
-                # .annotate(pictures = RawSQL('SELECT * FROM picturic_picturegeneric WHERE content_type_id=%s',[12]) )\
-                
 @permission_classes([IsAdminOrReadOnly])
 class ProductViewset(viewsets.ModelViewSet):
     queryset = Product.objects.prefetch_related("promotions",'pictures').select_related('category').all()
@@ -72,6 +49,8 @@ class ProductViewset(viewsets.ModelViewSet):
     filterset_class = ProductFilter
     search_fields = ['title','description']
     ordering_fields=['updated_at','title','category_id','price']
+
+    lookup_field='id'
 
 
 # TEST

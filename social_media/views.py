@@ -1,7 +1,12 @@
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import viewsets, permissions, mixins, status
 from rest_framework.decorators import permission_classes, action
 from rest_framework.response import Response
+from rest_framework.mixins import CreateModelMixin, ListModelMixin
+from rest_framework.viewsets import GenericViewSet
+
 from user_perms.permissions import IsAdminOrReadOnly, IsOwnerOfItem
+from utils.paginations import DefaultLimitOffsetPagination
 from .models import Tag, Comment
 from .serializers import TagSerializer, CommentSerializer
 
@@ -17,16 +22,16 @@ class CommentViewset(mixins.RetrieveModelMixin,
                      mixins.UpdateModelMixin,
                      mixins.DestroyModelMixin,
                      viewsets.GenericViewSet):
-    queryset = Comment.objects.prefetch_related('reply').all()
+    queryset = Comment.objects.prefetch_related('reply', 'user').all()
     serializer_class = CommentSerializer
 
     # Trying to make drf spectacular understands that in update, serializer won't get reply_to field!
     # def get_serializer_class(self):
     #     serializer = self.serializer_class
-        
+
     #     if self.request.method in ['PUT', 'PATCH']:
     #         setattr(serializer.Meta, 'read_only_fields', ('reply_to',))
-        
+
     #     return serializer
 
     def destroy(self, req, *args, **kwargs):
@@ -43,11 +48,32 @@ class CommentViewset(mixins.RetrieveModelMixin,
                 #     reply.save()
                 comment.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAdminUser])
-    def hidden_comments(self,req,*args,**kwargs):
+    def hidden_comments(self, req, *args, **kwargs):
         """Last deleted comments by users"""
-        hidden_comments=self.get_queryset().filter(hidden=True).order_by('-created_at')
-        serializer = self.get_serializer_class()(hidden_comments,read_only=True,context={'no-reply':True},many=True)
+        hidden_comments = self.get_queryset().filter(hidden=True).order_by('-created_at')
+        serializer = self.get_serializer_class()(hidden_comments, read_only=True, context={'no-reply': True}, many=True)
 
         return Response(serializer.data)
+
+
+class ListCreateCommentsViewset(ListModelMixin, CreateModelMixin, GenericViewSet):
+    '''You should set `content_type` and `object_id_lookup_url` in your subclass'''
+    content_type: ContentType = None
+    object_id_lookup_url: str = None
+
+    serializer_class = CommentSerializer
+    pagination_class = DefaultLimitOffsetPagination
+
+    def get_queryset(self):
+        return Comment.objects.filter(
+            content_type=self.content_type,
+            object_id=self.kwargs.get(self.object_id_lookup_url)
+        )
+
+    def perform_create(self, serializer):
+        serializer.save(
+            content_type=self.content_type,
+            object_id=self.kwargs.get(self.object_id_lookup_url)
+        )

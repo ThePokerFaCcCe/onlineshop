@@ -5,28 +5,31 @@ from rest_framework import permissions
 from rest_framework.decorators import action, permission_classes
 from rest_framework.response import Response
 
+from social_media.views import ListCreateCommentsViewset
+
 from .serializers import SocialProductSerializer, CustomCommentSerializer
 from products.views import ProductViewset
 from products.models import Product
 from user_perms.permissions import IsAdminOrReadOnly
 from social_media.models import Like, Comment
-from social_media.serializers import LikeSerializer
+from social_media.serializers import CommentSerializer, LikeSerializer
 from utils import content_types
+
 
 @permission_classes([IsAdminOrReadOnly])
 class SocialProductViewset(ProductViewset):
-    queryset = ProductViewset.queryset.prefetch_related('tags__tag','comments','likes').all()
+    queryset = ProductViewset.queryset.prefetch_related('tags__tag', 'comments', 'likes').all()
     serializer_class = SocialProductSerializer
 
     @action(detail=True, methods=['post', 'get'], permission_classes=[permissions.IsAuthenticatedOrReadOnly], serializer_class=LikeSerializer)
-    def like(self, request, pk):
+    def like(self, request, id):
         product = self.get_object()
         liked_by_user = False
 
         if request.method == 'POST':
             user_like, created = Like.objects.get_or_create(
                 content_type=content_types.PRODUCT,
-                object_id=product.pk,
+                object_id=product.id,
                 user=request.user
             )
 
@@ -40,32 +43,7 @@ class SocialProductViewset(ProductViewset):
 
         return Response(serializer.data)
 
-    @action(detail=True, methods=['get'], url_path='comments/(?P<page>\d+)', serializer_class=CustomCommentSerializer)
-    def comments_list(self, request, pk, page):
-        product = self.get_object()
 
-        from_index = settings.COMMENT_PER_PAGE * (int(page)-1)
-        to_index = from_index + settings.COMMENT_PER_PAGE
-
-        comments = Comment.objects.prefetch_related('reply').filter(
-            content_type=content_types.PRODUCT,
-            object_id=product.pk,
-            reply_to=None
-        )[from_index:to_index]
-
-        if not comments:
-            raise Http404()
-
-        serializer = self.get_serializer_class()(comments, many=True)
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['post'], url_path="comments", serializer_class=CustomCommentSerializer, permission_classes=[permissions.IsAuthenticated])
-    def comments_create(self, request, pk):
-        product = self.get_object()
-
-        serializer = self.get_serializer_class()(data=request.data, context={'no-reply': True, 'request': request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save(object_id=product.pk, content_type=content_types.PRODUCT)
-        return Response(serializer.data)
-
-
+class ProductListCreateCommentsViewset(ListCreateCommentsViewset):
+    content_type = content_types.PRODUCT
+    object_id_lookup_url = 'product_id'
