@@ -5,8 +5,8 @@ from .views import OrderViewset,PostTypeViewset
 
 
 router = DefaultRouter()
-router.register('posttype', PostTypeViewset)
-router.register('order', OrderViewset)
+router.register('post-type', PostTypeViewset)
+router.register('order', OrderViewset,basename='order')
 
 
 urlpatterns=[

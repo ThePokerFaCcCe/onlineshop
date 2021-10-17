@@ -2,9 +2,9 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import permission_classes, action
 from rest_framework.response import Response
 
-from user_perms.permissions import IsOwnerOfItem,IsAdminOrReadOnly
+from user_perms.permissions import IsOwnerOfItem, IsAdminOrReadOnly
 from .models import Order, OrderItem, PostType
-from .serializers import OrderSerializer, OrderItemSerializer, PostTypeSerializer
+from .serializers import OrderSerializer, OrderItemSerializer, OrderUpdateSerializer, PostTypeSerializer
 
 
 def all_methods(*args, **kwargs):
@@ -24,16 +24,28 @@ class PostTypeViewset(viewsets.ModelViewSet):
     serializer_class = PostTypeSerializer
 
 
-@permission_classes([IsOwnerOfItem|permissions.IsAdminUser])
 class OrderViewset(viewsets.ModelViewSet):
-    queryset = Order.objects.select_related('user', 'post_type').prefetch_related('order_items').all()
-    serializer_class = OrderSerializer
+
+    def get_permissions(self):
+        if self.request.method=='PATCH':
+            return [permissions.IsAdminUser()]
+        return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        queryset = Order.objects.select_related('user').prefetch_related(
+            'order_items__product__pictures',
+            'post_type__orders'
+        )
+
+        if self.request.user.is_staff:
+            return queryset.all()
+
+        return queryset.filter(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.request.method == 'PATCH':
+            return OrderUpdateSerializer
+        return OrderSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-    @action(detail=False, methods=all_methods(only='get'),permission_classes=[permissions.IsAuthenticated])
-    def my_orders(self, req):
-        orders_queryset = self.get_queryset().filter(user=req.user)
-        serializer = self.get_serializer_class()(orders_queryset, many=True, read_only=True)
-        return Response(data=serializer.data)
