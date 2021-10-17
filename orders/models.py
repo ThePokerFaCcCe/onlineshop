@@ -5,6 +5,7 @@ from django.db.models.fields import CharField, DateTimeField, PositiveIntegerFie
 from django.db.models import TextChoices
 from django.db.models.fields.related import ForeignKey
 from django.conf import settings
+from django_countries.fields import CountryField
 
 from customers.models import Address
 from products.models import Product
@@ -34,7 +35,7 @@ class Order(Model):
     email = EmailField(verbose_name='Email address', max_length=100, null=True, blank=True)
     phone_number = CharField(max_length=32, validators=[MinLengthValidator(6)])
 
-    country = CharField(max_length=60)
+    country = CountryField(default="IR")
     city = CharField(max_length=60)
     street = CharField(max_length=255)
     postal_code = CharField(max_length=50)
