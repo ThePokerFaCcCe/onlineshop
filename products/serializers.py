@@ -138,3 +138,18 @@ class ProductSerializer(serializers.ModelSerializer):
 
         representation['pictures'] = PictureGenericSerializer(instance.pictures, many=True, context=self.context).data
         return representation
+
+
+class ReadOnlyProductSerializer(serializers.ModelSerializer):
+    pictures = PictureGenericSerializer(many= True)
+
+    class Meta:
+        model = Product
+        fields=[
+            'id',
+            'title',
+            'description',
+            'price',
+            'pictures',
+        ]
+        read_only_fields=fields
