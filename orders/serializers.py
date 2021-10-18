@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
 
 
 from .models import Order, OrderItem, PostType
@@ -27,16 +28,19 @@ class PostTypeSerializer(serializers.ModelSerializer):
     def get_count_uses(self, obj):
         return obj.orders.count()
 
+
 class PostTypeReadOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = PostType
-        fields=[
+        fields = [
             'id',
             'title',
         ]
 
+
 class OrderItemSerializer(serializers.ModelSerializer):
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())  # , write_only=True
+    total_price = SerializerMethodField()
 
     class Meta:
         model = OrderItem
@@ -44,11 +48,15 @@ class OrderItemSerializer(serializers.ModelSerializer):
             'id',
             'quantity',
             'price',
+            'total_price',
             'product',
         ]
         extra_kwargs = {
             'price': {'read_only': True},
         }
+
+    def get_total_price(self, item: OrderItem) -> int:
+        return item.price*item.quantity
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -152,13 +160,14 @@ class OrderSerializer(serializers.ModelSerializer):
 
             order.price = price
             order.save()
-            
+
             shopcart.delete()
 
             return order
 
 
 class OrderUpdateSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Order
         fields = [
