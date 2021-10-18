@@ -27,6 +27,13 @@ class PostTypeSerializer(serializers.ModelSerializer):
     def get_count_uses(self, obj):
         return obj.orders.count()
 
+class PostTypeReadOnlySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostType
+        fields=[
+            'id',
+            'title',
+        ]
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())  # , write_only=True
@@ -113,20 +120,20 @@ class OrderSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['status'] = instance.OrderStatus(instance.status).label
-        representation['post_type'] = PostTypeSerializer(instance=instance.post_type).data
+        representation['post_type'] = PostTypeReadOnlySerializer(instance=instance.post_type).data
 
         return representation
 
     def create(self, validated_data):
         with transaction.atomic():
-            cart_items = validated_data.pop('shopcart').cart_items.all()
+            shopcart = validated_data.pop('shopcart')
             post_type_price = validated_data.get('post_type').price
 
             price = post_type_price
             order = Order.objects.create(price=price, post_type_price=post_type_price, **validated_data)
 
             order_items = []
-            for item in cart_items:
+            for item in shopcart.cart_items.all():
                 product = item.product
 
                 product.inventory -= item.quantity
@@ -145,6 +152,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
             order.price = price
             order.save()
+            
+            shopcart.delete()
 
             return order
 
