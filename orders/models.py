@@ -41,7 +41,7 @@ class Order(Model):
     postal_code = CharField(max_length=50)
 
     post_type_price=PositiveIntegerField()
-    price = PositiveIntegerField()
+    # price = PositiveIntegerField()
     buy_token = CharField(max_length=255)
 
     created_at = DateTimeField(auto_now_add=True)
