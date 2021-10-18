@@ -45,7 +45,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = [
-            'id',
             'quantity',
             'price',
             'total_price',
@@ -54,6 +53,17 @@ class OrderItemSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'price': {'read_only': True},
         }
+
+    def validate(self, data):
+        quantity = data.get("quantity")
+        product = data.get("product")
+        if quantity > product.inventory:
+            raise serializers.ValidationError({
+                "quantity":
+                f"Order quantity is greater than product inventory with pk \"{product.pk}\""
+            })
+
+        return data
 
     def get_total_price(self, item: OrderItem) -> int:
         return item.price*item.quantity
@@ -64,6 +74,35 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
         return representation
 
+    def create(self, validated_data):
+        product: Product = validated_data.get("product")
+
+        order_item: OrderItem = OrderItem.objects.create(
+            **validated_data, price=product.price
+        )
+
+        return order_item
+
+
+class OrderItemUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = OrderItem
+        fields = [
+            'quantity',
+        ]
+
+    def validate(self, data):
+        quantity = data.get("quantity")
+        product = self.instance.product
+        if quantity > product.inventory:
+            raise serializers.ValidationError({
+                "quantity":
+                f"Order quantity is greater than product inventory with pk \"{product.pk}\""
+            })
+
+        return data
+
 
 class OrderSerializer(serializers.ModelSerializer):
     post_type = serializers.PrimaryKeyRelatedField(queryset=PostType.objects.all())
@@ -71,6 +110,7 @@ class OrderSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     shopcart = serializers.UUIDField(write_only=True)
     products = OrderItemSerializer(source='order_items', many=True, read_only=True)
+    total_price = SerializerMethodField()
 
     class Meta:
         model = Order
@@ -100,8 +140,6 @@ class OrderSerializer(serializers.ModelSerializer):
             'email': {'required': False},
             'status': {'read_only': True},
             'post_type_price': {'read_only': True},
-            'total_price': {'source': 'price', 'read_only': True},
-            # '':{'required':False},
         }
 
     def validate_shopcart(self, shopcart_id):
@@ -125,6 +163,12 @@ class OrderSerializer(serializers.ModelSerializer):
 
         return shopcart
 
+    def get_total_price(self, order: Order):
+        return sum([
+            item.price * item.quantity
+            for item in order.order_items.all()
+        ])
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['status'] = instance.OrderStatus(instance.status).label
@@ -137,29 +181,15 @@ class OrderSerializer(serializers.ModelSerializer):
             shopcart = validated_data.pop('shopcart')
             post_type_price = validated_data.get('post_type').price
 
-            price = post_type_price
-            order = Order.objects.create(price=price, post_type_price=post_type_price, **validated_data)
+            order = Order.objects.create(post_type_price=post_type_price, **validated_data)
 
-            order_items = []
-            for item in shopcart.cart_items.all():
-                product = item.product
-
-                product.inventory -= item.quantity
-                product.save()
-
-                order_items.append(
-                    OrderItem(
-                        order=order, product=product,
-                        price=product.price, quantity=item.quantity
-                    )
+            OrderItem.objects.bulk_create([
+                OrderItem(
+                    order=order, product=item.product,
+                    price=item.product.price, quantity=item.quantity
                 )
-
-                price += (product.price * item.quantity)
-
-            OrderItem.objects.bulk_create(order_items)
-
-            order.price = price
-            order.save()
+                for item in shopcart.cart_items.all()
+            ])
 
             shopcart.delete()
 
@@ -174,3 +204,22 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
             'id',
             'status',
         ]
+
+    def update(self, order: Order, validated_data):
+        status = validated_data.get("status")
+
+        if status == Order.OrderStatus.COMPLETE:
+            products = []
+            
+            for item in order.order_items.all():
+                product = item.product
+                product.inventory -= item.quantity
+
+                products.append(product)
+            print(products)
+            Product.objects.bulk_update(products, fields=['inventory'])
+
+        order.status = status
+        order.save()
+
+        return order
