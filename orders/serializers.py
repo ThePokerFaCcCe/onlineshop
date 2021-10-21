@@ -216,7 +216,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
                 product.inventory -= item.quantity
 
                 products.append(product)
-            print(products)
+
             Product.objects.bulk_update(products, fields=['inventory'])
 
         order.status = status
