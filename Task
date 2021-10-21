@@ -1,5 +1,7 @@
+simple queryset for delete method
+find a way to select nested replies in 1 query for comments
+add perimssions for comments
 make checkout url for orders
 create schema for order, shopcart, ...
 learn and add payment method for orders(I have no idea how they work! so i think it's the hard part)
-better way to showing tag and comment for product(it isn't important for now!)
 picturic: use PictureField when we have multiple pics(kwarg: multiple=True on field) # for now I will use ForeignKey
