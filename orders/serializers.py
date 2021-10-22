@@ -1,7 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
+
+from orders.schemas import ORDER_RESPONSE_LIST, ORDER_RESPONSE_RETRIEVE, ORDERITEM_RESPONSE_LIST, ORDERITEM_RESPONSE_RETRIEVE, SIMPLE_POSTTYPE_RESPONSE_RETRIEVE
 
 
 from .models import Order, OrderItem, PostType
@@ -29,6 +32,7 @@ class PostTypeSerializer(serializers.ModelSerializer):
         return obj.orders.count()
 
 
+@extend_schema_serializer(examples=[SIMPLE_POSTTYPE_RESPONSE_RETRIEVE])
 class PostTypeReadOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = PostType
@@ -38,6 +42,7 @@ class PostTypeReadOnlySerializer(serializers.ModelSerializer):
         ]
 
 
+@extend_schema_serializer(examples=[ORDERITEM_RESPONSE_RETRIEVE, ORDERITEM_RESPONSE_LIST])
 class OrderItemSerializer(serializers.ModelSerializer):
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())  # , write_only=True
     total_price = SerializerMethodField()
@@ -104,6 +109,7 @@ class OrderItemUpdateSerializer(serializers.ModelSerializer):
         return data
 
 
+@extend_schema_serializer(examples=[ORDER_RESPONSE_RETRIEVE, ORDER_RESPONSE_LIST])
 class OrderSerializer(serializers.ModelSerializer):
     post_type = serializers.PrimaryKeyRelatedField(queryset=PostType.objects.all())
 
@@ -210,7 +216,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 
         if status == Order.OrderStatus.COMPLETE:
             products = []
-            
+
             for item in order.order_items.all():
                 product = item.product
                 product.inventory -= item.quantity
