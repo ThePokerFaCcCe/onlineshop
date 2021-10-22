@@ -1,7 +1,10 @@
 from django.conf import settings
 from django.http.response import Http404
+from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
+
+from shopcarts.schemas import CART_RESPONSE_RETRIEVE, CARTITEM_RESPONSE_RETRIEVE
 
 from .models import Cart, CartItem
 from products.models import Product
@@ -9,6 +12,7 @@ from products.models import Product
 from products.serializers import ReadOnlyProductSerializer
 
 
+@extend_schema_serializer(examples=[CARTITEM_RESPONSE_RETRIEVE])
 class CartItemSerializer(serializers.ModelSerializer):
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
     total_price = SerializerMethodField()
@@ -56,6 +60,7 @@ class CartItemSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+@extend_schema_serializer(examples=[CART_RESPONSE_RETRIEVE])
 class CartSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(read_only=True)
     products = CartItemSerializer(source='cart_items', many=True, read_only=True)
