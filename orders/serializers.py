@@ -28,7 +28,7 @@ class PostTypeSerializer(serializers.ModelSerializer):
             'price',
         ]
 
-    def get_count_uses(self, obj):
+    def get_count_uses(self, obj) -> int:
         return obj.orders.count()
 
 
