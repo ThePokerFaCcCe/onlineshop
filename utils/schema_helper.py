@@ -32,6 +32,8 @@ def convert_type_to_value(vtype) -> Any:
         if isinstance(vtype, str):
             if vtype == '+int':
                 return 4294967295
+            if vtype == 'uuid':
+                return "3fa85f64-5717-4562-b3fc-2c963f66afa6"
 
     return vtype
 
