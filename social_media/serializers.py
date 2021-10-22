@@ -1,8 +1,8 @@
-from django.contrib.contenttypes.models import ContentType
+from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
-from rest_framework.relations import PrimaryKeyRelatedField
+
+from social_media.schemas import COMMENT_RESPONSE_LIST, COMMENT_RESPONSE_RETRIEVE
 from .models import Tag, TaggedItem, Like, Comment
-from products.models import Product
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class TaggedItemSerializer(serializers.ModelSerializer):
             'label'
         ]
 
-    def get_label(self, obj):
+    def get_label(self, obj) -> str:
         return obj.tag.label
 
 
@@ -55,6 +55,7 @@ class LikeSerializer(serializers.Serializer):
 #         return serializer.data
 
 
+@extend_schema_serializer(examples=[COMMENT_RESPONSE_RETRIEVE, COMMENT_RESPONSE_LIST])
 class CommentSerializer(serializers.ModelSerializer):
     replies = serializers.SerializerMethodField()
     reply_to = serializers.PrimaryKeyRelatedField(queryset=Comment.objects.all(), required=False, allow_null=True)
