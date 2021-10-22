@@ -52,6 +52,11 @@ class ProductViewset(viewsets.ModelViewSet):
 
     lookup_field='id'
 
+    def get_queryset(self):
+        if self.request.method == 'DELETE':
+            return Product.objects.all()
+        return self.queryset
+
 
 # TEST
 @api_view(['POST', 'GET'])

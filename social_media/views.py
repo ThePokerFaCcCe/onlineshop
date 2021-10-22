@@ -25,6 +25,11 @@ class CommentViewset(mixins.RetrieveModelMixin,
     queryset = Comment.objects.prefetch_related('reply', 'user').all()
     serializer_class = CommentSerializer
 
+    def get_queryset(self):
+        if self.request.method == 'DELETE':
+            return Comment.objects.all()
+        return self.queryset
+
     # Trying to make drf spectacular understands that in update, serializer won't get reply_to field!
     # def get_serializer_class(self):
     #     serializer = self.serializer_class
@@ -72,10 +77,13 @@ class ListCreateCommentsViewset(ListModelMixin, CreateModelMixin, GenericViewSet
         return self.kwargs.get(self.object_id_lookup_url)
 
     def get_queryset(self):
-        return Comment.objects.filter(
+        queryset = Comment.objects.filter(
             content_type=self.content_type,
             object_id=self._get_oid(),
-        ).get_cached_trees()
+        )
+        if self.request.method == 'DELETE':
+            return queryset
+        return queryset.get_cached_trees()
 
     def get_serializer_context(self):
         return {

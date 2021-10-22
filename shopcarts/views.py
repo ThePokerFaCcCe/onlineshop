@@ -11,6 +11,11 @@ class CartViewset(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
 
     lookup_field = 'id'
 
+    def get_queryset(self):
+        if self.request.method == 'DELETE':
+            return Cart.objects.all()
+        return self.queryset
+
 
 class CartItemViewset(CreateModelMixin, RetrieveModelMixin,
                       DestroyModelMixin, GenericViewSet):
@@ -21,6 +26,8 @@ class CartItemViewset(CreateModelMixin, RetrieveModelMixin,
     lookup_url_kwarg = 'product_id'
 
     def get_queryset(self):
+        if self.request.method == 'DELETE':
+            return CartItem.objects.all()
         return CartItem.objects.prefetch_related('product__pictures')\
             .filter(cart_id=self.kwargs.get("cart_id"))
 
