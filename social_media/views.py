@@ -1,9 +1,11 @@
 from django.contrib.contenttypes.models import ContentType
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, permissions, mixins, status
 from rest_framework.decorators import permission_classes, action
 from rest_framework.response import Response
 from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.viewsets import GenericViewSet
+from social_media.schemas import COMMENT_RESPONSE_PAGINATED
 
 from user_perms.permissions import IsAdminOrReadOnly, IsOwnerOfItem
 from utils.paginations import DefaultLimitOffsetPagination
@@ -62,6 +64,7 @@ class CommentViewset(mixins.RetrieveModelMixin,
 
         return Response(serializer.data)
 
+@extend_schema(examples=[COMMENT_RESPONSE_PAGINATED])
 @permission_classes([permissions.IsAuthenticatedOrReadOnly])
 class ListCreateCommentsViewset(ListModelMixin, CreateModelMixin, GenericViewSet):
     # You should set `content_type`

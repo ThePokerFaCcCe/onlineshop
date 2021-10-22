@@ -1,6 +1,10 @@
 from typing import Any
 
 
+RESPONSE_DEFAULT_PAGINATED = {
+    'name': 'Response Paginated',
+    'response_only': True,
+}
 RESPONSE_DEFAULT_RETRIEVE = {
     'name': 'Response Retrieve',
     'response_only': True,

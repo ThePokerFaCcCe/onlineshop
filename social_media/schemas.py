@@ -1,5 +1,5 @@
 from drf_spectacular.utils import OpenApiExample
-from utils.schema_helper import RESPONSE_DEFAULT_LIST, RESPONSE_DEFAULT_RETRIEVE, schema_generator
+from utils.schema_helper import PAGINATION_DEFAULT, RESPONSE_DEFAULT_LIST, RESPONSE_DEFAULT_PAGINATED, RESPONSE_DEFAULT_RETRIEVE, schema_generator
 
 
 _base_comment = {
@@ -36,4 +36,22 @@ COMMENT_RESPONSE_RETRIEVE = OpenApiExample(
 COMMENT_RESPONSE_LIST = OpenApiExample(
     **RESPONSE_DEFAULT_LIST,
     value=[COMMENT_RESPONSE_RETRIEVE.value]
+)
+
+COMMENT_RESPONSE_PAGINATED = OpenApiExample(
+    **RESPONSE_DEFAULT_PAGINATED,
+    value={
+        **PAGINATION_DEFAULT,
+        "results": [{
+            **schema_generator({
+                **_base_comment,
+                "replies": [
+                    {
+                        **_base_comment,
+                        'replies': ['...']
+                    }
+                ],
+            })
+        }]
+    }
 )
