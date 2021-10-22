@@ -19,27 +19,38 @@ PROMOTION_RESPONSE_RETRIEVE = OpenApiExample(
     })
 )
 
-PROMOTION_RESPONSE_LIST=OpenApiExample(
+PROMOTION_RESPONSE_LIST = OpenApiExample(
     **RESPONSE_DEFAULT_LIST,
     value=[PROMOTION_RESPONSE_RETRIEVE.value]
 )
 
-PRODUCT_RESPONSE_RETRIEVE = OpenApiExample(
+
+SIMPLE_PRODUCT_RETRIEVE = OpenApiExample(
     **RESPONSE_DEFAULT_RETRIEVE,
     value=schema_generator({
         "id": int,
         "title": str,
         "description": str,
         "pictures": [PICTURE_GENERIC_RESPONSE.value],
-        "inventory": '+int',
         "price": '+int',
-        "category": {
-            'id': int,
-            'title': str,
-            'description': str,
-        },
-        "promotions": [PROMOTION_RESPONSE_RETRIEVE.value]
     })
+)
+
+
+PRODUCT_RESPONSE_RETRIEVE = OpenApiExample(
+    **RESPONSE_DEFAULT_RETRIEVE,
+    value={
+        **SIMPLE_PRODUCT_RETRIEVE.value,
+        **schema_generator({
+            "inventory": '+int',
+            "category": {
+                'id': int,
+                'title': str,
+                'description': str,
+            },
+            "promotions": [PROMOTION_RESPONSE_RETRIEVE.value]
+        })
+    }
 )
 
 PRODUCT_RESPONSE_LIST = OpenApiExample(

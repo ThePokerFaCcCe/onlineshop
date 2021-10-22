@@ -4,7 +4,7 @@ from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
 from picturic.serializer_fields import MultiplePictureField
-from products.schemas import CATEGORY_RESPONSE_RETRIEVE, CATEGORY_RESPONSE_LIST, PRODUCT_RESPONSE_LIST, PRODUCT_RESPONSE_RETRIEVE, PROMOTION_REQUEST, PROMOTION_RESPONSE_RETRIEVE, PROMOTION_RESPONSE_LIST
+from products.schemas import CATEGORY_RESPONSE_RETRIEVE, CATEGORY_RESPONSE_LIST, PRODUCT_RESPONSE_LIST, PRODUCT_RESPONSE_RETRIEVE, PROMOTION_REQUEST, PROMOTION_RESPONSE_RETRIEVE, PROMOTION_RESPONSE_LIST, SIMPLE_PRODUCT_RETRIEVE
 from .models import Product, Category, Promotion
 from picturic.serializers import PictureGenericSerializer
 from picturic.models import PictureGeneric
@@ -140,6 +140,7 @@ class ProductSerializer(serializers.ModelSerializer):
         return representation
 
 
+@extend_schema_serializer(examples=[SIMPLE_PRODUCT_RETRIEVE])
 class ReadOnlyProductSerializer(serializers.ModelSerializer):
     pictures = PictureGenericSerializer(many= True)
 
