@@ -12,6 +12,14 @@ _base_comment = {
     "updated_at": "datetime",
 }
 
+TAG_RESPONSE_RETRIEVE = OpenApiExample(
+    **RESPONSE_DEFAULT_RETRIEVE,
+    value=schema_generator({
+        "id": int,
+        "label": str,
+    })
+)
+
 COMMENT_RESPONSE_RETRIEVE = OpenApiExample(
     **RESPONSE_DEFAULT_RETRIEVE,
     value=schema_generator({
