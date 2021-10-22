@@ -15,6 +15,7 @@ mysqlclient = "*"
 django-countries = "*"
 drf-nested-routers = "*"
 django-filter = "*"
+django-mptt = "*"
 
 [dev-packages]
 autopep8 = "*"
