@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # 'corsheaders', # cors
     'rest_framework',
     'rest_framework.authtoken',
@@ -54,40 +54,49 @@ INSTALLED_APPS = [
 # ] # cors
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':[
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
-    'DEFAULT_SCHEMA_CLASS':"drf_spectacular.openapi.AutoSchema"
+    'DEFAULT_SCHEMA_CLASS': "drf_spectacular.openapi.AutoSchema"
 }
 SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
+    'TITLE': 'Online Shop API',
+
+    'CONTACT': {
+        'name': 'Matin Khaleghi',
+        'url': "https://t.me/ThePokerFaCe",
+        'email': "matin.khaleghi.nezhad@gmail.com"
+    },
+    'LICENSE': {'name': "MIT"},
+    'VERSION': '1.0.0',
 }
 DJOSER = {
-    'USER_CREATE_PASSWORD_RETYPE':True,
-    'SET_PASSWORD_RETYPE':True,
-    'PASSWORD_RESET_CONFIRM_RETYPE':True,
-    'SERIALIZERS':{
-        'user':"customers.serializers.CustomerSerializer",
-        'user_create_password_retype':"customers.serializers.CustomerCreateSerializer",
-        'user_delete':"customers.serializers.CustomerDeleteSerializer",
-        'current_user':"customers.serializers.CustomerSerializer",
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SET_PASSWORD_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_RETYPE': True,
+    'SERIALIZERS': {
+        'user': "customers.serializers.CustomerSerializer",
+        'user_create_password_retype': "customers.serializers.CustomerCreateSerializer",
+        'user_delete': "customers.serializers.CustomerDeleteSerializer",
+        'current_user': "customers.serializers.CustomerSerializer",
     },
-    'PERMISSIONS':{
-        "user_list":['rest_framework.permissions.IsAdminUser'],
-        'user_delete':['rest_framework.permissions.IsAdminUser'],
+    'PERMISSIONS': {
+        "user_list": ['rest_framework.permissions.IsAdminUser'],
+        'user_delete': ['rest_framework.permissions.IsAdminUser'],
     }
 }
 
-INTERNAL_IPS = [ # debug tool
+INTERNAL_IPS = [  # debug tool
     '127.0.0.1',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    #'corsheaders.middleware.CorsMiddleware', # cors
+    # 'corsheaders.middleware.CorsMiddleware', # cors
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -125,9 +134,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'onlineshop',
-        'HOST':config("DB_HOST"),
-        'USER':config("DB_USER"),
-        'PASSWORD':config("DB_PASSWORD"),
+        'HOST': config("DB_HOST"),
+        'USER': config("DB_USER"),
+        'PASSWORD': config("DB_PASSWORD"),
     }
 }
 
