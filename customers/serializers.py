@@ -15,7 +15,7 @@ class CustomerReadOnlySerializer(serializers.ModelSerializer):
             'username',
             'is_active',
             'is_staff',
-            'is_admin'
+            'is_superuser'
         ]
         read_only_fields = fields
 
@@ -36,11 +36,13 @@ class CustomerSerializer(DjoserUserSerializer):
             'profile_image',
             'is_active',
             'is_staff',
-            'is_admin',
+            'is_superuser',
         ]
 
         extra_kwargs = {
             'is_active': {'read_only': True},
+            'is_staff': {'read_only': True},
+            'is_superuser': {'read_only': True},
             'email': {'read_only': True},
             'username': {'read_only': True},
             'age': {'required': False},
@@ -94,11 +96,11 @@ class CustomerToAdminSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'is_staff',
-            'is_admin',
+            'is_superuser',
         ]
         extra_kwargs = {
-            'is_staff': {'source': 'staff', 'required': True},
-            'is_admin': {'source': 'admin', 'required': True},
+            'is_staff': {'required': True},
+            'is_superuser': {'required': True},
         }
 
 
