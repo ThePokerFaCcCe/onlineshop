@@ -1,5 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
+from rest_framework.relations import PrimaryKeyRelatedField
 from .models import Tag, TaggedItem, Like, Comment
 from products.models import Product
 
@@ -73,13 +74,24 @@ class CommentSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'user': {'read_only': True},
             'hidden': {'read_only': True},
-            # 'reply_to': {'read_only': True},
         }
+
+    def validate_reply_to(self, reply):
+        if reply:
+            if not (
+                reply.content_type == self.context.get("content_type")
+                and
+                reply.object_id == int(self.context.get("object_id"))
+            ):
+                raise serializers.ValidationError({
+                    "reply_to": f"Invalid pk \"{reply}\" - object does not exist."
+                })
+        return reply
 
     def get_replies(self, obj) -> list[int]:
         if self.context.get('no-reply'):
             return ['...']
-        return self.__class__(obj.reply, many=True).data
+        return self.__class__(obj.get_children(), many=True, context=self.context).data
 
     def create(self, validated_data):
         user = self.context['request'].user

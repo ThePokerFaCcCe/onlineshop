@@ -57,10 +57,10 @@ class CommentViewset(mixins.RetrieveModelMixin,
 
         return Response(serializer.data)
 
-
+@permission_classes([permissions.IsAuthenticatedOrReadOnly])
 class ListCreateCommentsViewset(ListModelMixin, CreateModelMixin, GenericViewSet):
-    # You should set `content_type` 
-    # and `object_id_lookup_url` 
+    # You should set `content_type`
+    # and `object_id_lookup_url`
     # in your subclasses
     content_type: ContentType = None
     object_id_lookup_url: str = None
@@ -68,14 +68,24 @@ class ListCreateCommentsViewset(ListModelMixin, CreateModelMixin, GenericViewSet
     serializer_class = CommentSerializer
     pagination_class = DefaultLimitOffsetPagination
 
+    def _get_oid(self):
+        return self.kwargs.get(self.object_id_lookup_url)
+
     def get_queryset(self):
         return Comment.objects.filter(
             content_type=self.content_type,
-            object_id=self.kwargs.get(self.object_id_lookup_url)
-        )
+            object_id=self._get_oid(),
+        ).get_cached_trees()
+
+    def get_serializer_context(self):
+        return {
+            **super().get_serializer_context(),
+            'object_id': self._get_oid(),
+            'content_type': self.content_type,
+        }
 
     def perform_create(self, serializer):
         serializer.save(
             content_type=self.content_type,
-            object_id=self.kwargs.get(self.object_id_lookup_url)
+            object_id=self._get_oid()
         )
