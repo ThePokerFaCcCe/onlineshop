@@ -16,6 +16,7 @@ django-countries = "*"
 drf-nested-routers = "*"
 django-filter = "*"
 django-mptt = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 autopep8 = "*"
