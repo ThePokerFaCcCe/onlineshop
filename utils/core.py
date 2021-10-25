@@ -1,12 +1,11 @@
 from rest_framework.viewsets import ModelViewSet
 
-def all_methods(*except_methods, **kwargs):
-    use_only = kwargs.get('only', None)
-    if use_only:
+
+def all_methods(*methods, only_these: bool = False):
+    except_methods = methods
+    if only_these:
         req_methods = ['put', 'post', 'patch', 'delete', 'get']
-        req_methods.remove(use_only.lower())
-        except_methods = req_methods
+        except_methods = list(set(req_methods)-set(methods))
 
-    methods = ModelViewSet.http_method_names
-    return [m for m in methods if m not in except_methods] if except_methods else methods
-
+    all_methods = ModelViewSet.http_method_names
+    return list(set(all_methods)-set(except_methods))
