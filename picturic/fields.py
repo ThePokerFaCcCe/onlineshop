@@ -5,7 +5,7 @@ I think this is a very bad way to do that but it works :))
 import os
 from typing import Any, Optional, Tuple
 from django.db.models import ImageField
-from django.db.models.fields.files import ImageFieldFile, ImageFileDescriptor, FieldFile
+from django.db.models.fields.files import ImageFieldFile, ImageFileDescriptor
 from django.conf import settings
 from PIL import Image
 from .utils import upload_to_path

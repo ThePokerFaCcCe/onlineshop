@@ -7,7 +7,7 @@ from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 from social_media.schemas import COMMENT_RESPONSE_PAGINATED
 
-from user_perms.permissions import IsAdminOrReadOnly, IsOwnerOfItem
+from utils.permissions import IsAdminOrReadOnly, IsOwnerOfItem
 from utils.core import all_methods
 from utils.paginations import DefaultLimitOffsetPagination
 from .models import Tag, Comment

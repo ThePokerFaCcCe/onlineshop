@@ -1,15 +1,5 @@
-from rest_framework import serializers
-from rest_framework.settings import api_settings
 from rest_framework.fields import Field, ImageField
-from drf_spectacular.utils import extend_schema_field, extend_schema_serializer, OpenApiExample
-from drf_spectacular.types import OpenApiTypes
-
-
-@extend_schema_serializer(
-
-)
-class SchemaSerializer(serializers.Serializer):
-    pass
+from drf_spectacular.utils import extend_schema_field
 
 
 @extend_schema_field({'type': "string", 'format': 'binary',

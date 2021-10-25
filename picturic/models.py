@@ -1,6 +1,5 @@
 from django.db.models import Model
 from django.db.models.deletion import CASCADE
-from django.db.models.fields import related
 from django.db.models.fields.related import ForeignKey
 from django.db.models.fields import PositiveIntegerField
 from django.contrib.contenttypes.models import ContentType

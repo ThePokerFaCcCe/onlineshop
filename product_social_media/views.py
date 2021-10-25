@@ -1,6 +1,3 @@
-from django.contrib.contenttypes.models import ContentType
-from django.conf import settings
-from django.http import Http404
 from rest_framework import permissions
 from rest_framework.decorators import action, permission_classes
 from rest_framework.response import Response
@@ -8,12 +5,11 @@ from rest_framework.response import Response
 from social_media.views import ListCreateCommentsViewset
 from utils.core import all_methods
 
-from .serializers import SocialProductSerializer, CustomCommentSerializer
+from .serializers import SocialProductSerializer
 from products.views import ProductViewset
-from products.models import Product
-from user_perms.permissions import IsAdminOrReadOnly
-from social_media.models import Like, Comment
-from social_media.serializers import CommentSerializer, LikeSerializer
+from utils.permissions import IsAdminOrReadOnly
+from social_media.models import Like
+from social_media.serializers import LikeSerializer
 from utils import content_types
 
 

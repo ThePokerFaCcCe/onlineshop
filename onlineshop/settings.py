@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'orders',
     'social_media',
     'product_social_media',
-    'user_perms',
     'picturic',
     'utils',
     # '',

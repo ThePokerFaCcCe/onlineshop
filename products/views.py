@@ -1,13 +1,9 @@
-from django.contrib.contenttypes.models import ContentType
-from django.db.models.expressions import RawSQL
-from django.http import JsonResponse, HttpResponse
 
-from rest_framework import generics, permissions, viewsets, status
-from rest_framework.decorators import permission_classes, action, api_view
+from rest_framework import status, viewsets
+from rest_framework.decorators import action, permission_classes
 from rest_framework.response import Response
-from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from picturic.models import PictureGeneric
 from utils.core import all_methods
 from utils.filters import OrderingFilterWithSchema
 
@@ -15,7 +11,7 @@ from utils.paginations import DefaultLimitOffsetPagination
 from products.filters import ProductFilter
 from .models import Promotion, Product, Category
 from .serializers import CategorySerializer, ProductSerializer, PromotionSerializer
-from user_perms.permissions import IsAdminOrReadOnly
+from utils.permissions import IsAdminOrReadOnly
 
 
 @permission_classes([IsAdminOrReadOnly])

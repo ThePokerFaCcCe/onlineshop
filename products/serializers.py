@@ -1,5 +1,3 @@
-from django.contrib.contenttypes.models import ContentType
-from django.db.models.query import QuerySet
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
@@ -7,7 +5,6 @@ from picturic.serializer_fields import MultiplePictureField
 from products.schemas import CATEGORY_RESPONSE_RETRIEVE, CATEGORY_RESPONSE_LIST, PRODUCT_RESPONSE_LIST, PRODUCT_RESPONSE_RETRIEVE, PROMOTION_REQUEST, PROMOTION_RESPONSE_RETRIEVE, PROMOTION_RESPONSE_LIST, SIMPLE_PRODUCT_RETRIEVE
 from .models import Product, Category, Promotion
 from picturic.serializers import PictureGenericSerializer
-from picturic.models import PictureGeneric
 
 
 @extend_schema_serializer(examples=[PROMOTION_RESPONSE_RETRIEVE, PROMOTION_RESPONSE_LIST, PROMOTION_REQUEST])

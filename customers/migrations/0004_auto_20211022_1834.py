@@ -3,8 +3,6 @@
 import django.contrib.auth.validators
 from django.db import migrations, models
 import django.utils.timezone
-import picturic.fields
-import picturic.utils
 
 
 class Migration(migrations.Migration):

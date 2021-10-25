@@ -1,6 +1,6 @@
 from drf_spectacular.utils import OpenApiExample
 from products.schemas import SIMPLE_PRODUCT_RETRIEVE
-from utils.schema_helper import RESPONSE_DEFAULT_LIST, RESPONSE_DEFAULT_RETRIEVE, schema_generator
+from utils.schema_helper import RESPONSE_DEFAULT_RETRIEVE, schema_generator
 
 CARTITEM_RESPONSE_RETRIEVE = OpenApiExample(
     **RESPONSE_DEFAULT_RETRIEVE,

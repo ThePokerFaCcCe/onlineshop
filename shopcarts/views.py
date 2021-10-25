@@ -1,5 +1,5 @@
-from rest_framework.mixins import CreateModelMixin, DestroyModelMixin, RetrieveModelMixin, UpdateModelMixin
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.mixins import CreateModelMixin, DestroyModelMixin, RetrieveModelMixin
+from rest_framework.viewsets import GenericViewSet
 
 from shopcarts.models import Cart, CartItem
 from .serializers import CartItemSerializer, CartSerializer

@@ -1,5 +1,5 @@
 from django.db.models.base import Model
-from django.db.models.deletion import CASCADE, PROTECT
+from django.db.models.deletion import CASCADE
 from django.db.models.fields import CharField, DateTimeField, PositiveIntegerField, TextField, BooleanField
 from django.db.models.fields.related import ForeignKey
 from django.contrib.contenttypes.models import ContentType

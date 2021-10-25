@@ -1,4 +1,4 @@
-from drf_spectacular.utils import OpenApiExample, OpenApiParameter
+from drf_spectacular.utils import OpenApiExample
 from picturic.schemas import PICTURE_GENERIC_RESPONSE
 from utils.schema_helper import PAGINATION_DEFAULT, REQUEST_DEFAULT, RESPONSE_DEFAULT_LIST, RESPONSE_DEFAULT_RETRIEVE, schema_generator
 

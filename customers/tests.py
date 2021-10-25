@@ -6,7 +6,6 @@ from rest_framework import status
 from PIL import Image
 import tempfile
 import os
-from .models import Customer
 
 
 def upload_img_url(user_id):

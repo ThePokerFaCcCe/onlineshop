@@ -1,11 +1,11 @@
 from typing import Iterable
-from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
+from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 from product_social_media.schemas import SOCIAL_PRODUCT_RESULT_LIST, SOCIAL_PRODUCT_RESULT_RETRIEVE
 from products.models import Product
 from products.serializers import ProductSerializer
-from social_media.models import Tag, TaggedItem, Like, Comment
-from social_media.serializers import TagSerializer, TaggedItemSerializer, CommentSerializer
+from social_media.models import Tag, TaggedItem
+from social_media.serializers import CommentSerializer, TaggedItemSerializer
 from customers.serializers import CustomerReadOnlySerializer
 from utils import content_types
 

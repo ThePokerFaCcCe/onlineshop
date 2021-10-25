@@ -1,5 +1,5 @@
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
-from user_perms.permissions import IsAdmin, IsOwnerOfItem, IsSuperUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from utils.permissions import IsAdmin, IsOwnerOfItem, IsSuperUser
 from rest_framework import generics, viewsets
 from rest_framework.decorators import action, permission_classes
 from rest_framework.response import Response
