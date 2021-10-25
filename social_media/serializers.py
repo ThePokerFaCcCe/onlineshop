@@ -98,13 +98,11 @@ class CommentSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         return super().create({**validated_data, "user": user})
 
-    def update(self, instance, validated_data):
-        """Change text of comment"""
-        instance.text = validated_data.get('text', instance.text)
 
-        # reply_to = validated_data.get('reply_to', instance.reply_to)
-        # if instance != reply_to:
-        #     instance.reply_to = reply_to
-
-        instance.save()
-        return instance
+class CommentUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = [
+            'id',
+            'text',
+        ]
