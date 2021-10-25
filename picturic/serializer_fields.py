@@ -17,7 +17,7 @@ class SchemaSerializer(serializers.Serializer):
                           "image": {"url": "string", "name": "string"},
                           "thumbnail": {"url": "string", "name": "string"}
                       }
-})
+                      })
 class PictureField(ImageField):
     def _make_url(self, value):
         try:
@@ -48,13 +48,14 @@ class PictureField(ImageField):
         # print('data: ',data.__dict__) # For future usage
         return super().to_internal_value(data)
 
-@extend_schema_field({'type':'array','items':{'type': "string", 'format': 'binary'},
+
+@extend_schema_field({'type': 'array', 'items': {'type': "string", 'format': 'binary'},
                       'example': [
                           {
-                          "image": {"url": "string", "name": "string"},
-                          "thumbnail": {"url": "string", "name": "string"}
+                              "image": {"url": "string", "name": "string"},
+                              "thumbnail": {"url": "string", "name": "string"}
                           },
-                      ]
+]
 })
 class MultiplePictureField(Field):
     """
@@ -63,5 +64,5 @@ class MultiplePictureField(Field):
     and you have to handle image saving in your view
     """
 
-    def to_internal_value(self,data):
+    def to_internal_value(self, data):
         return data

@@ -27,6 +27,7 @@ class CommentViewset(mixins.RetrieveModelMixin,
                      viewsets.GenericViewSet):
     queryset = Comment.objects.prefetch_related('reply', 'user').all()
     http_method_names = all_methods('put')
+
     def get_queryset(self):
         if self.request.method == 'DELETE':
             return Comment.objects.all()
@@ -52,13 +53,14 @@ class CommentViewset(mixins.RetrieveModelMixin,
                 comment.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=False, methods=all_methods('get',only_these=True), permission_classes=[permissions.IsAdminUser])
+    @action(detail=False, methods=all_methods('get', only_these=True), permission_classes=[permissions.IsAdminUser])
     def hidden_comments(self, req, *args, **kwargs):
         """Last deleted comments by users"""
         hidden_comments = self.get_queryset().filter(hidden=True).order_by('-created_at')
         serializer = self.get_serializer_class()(hidden_comments, read_only=True, context={'no-reply': True}, many=True)
 
         return Response(serializer.data)
+
 
 @extend_schema(examples=[COMMENT_RESPONSE_PAGINATED])
 @permission_classes([permissions.IsAuthenticatedOrReadOnly])

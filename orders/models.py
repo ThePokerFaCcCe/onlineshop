@@ -1,13 +1,12 @@
 from django.db.models.base import Model
 from django.db.models.deletion import CASCADE, PROTECT
 from django.core.validators import MinLengthValidator
-from django.db.models.fields import CharField, DateTimeField, PositiveIntegerField, EmailField, TextField
+from django.db.models.fields import CharField, DateTimeField, EmailField, PositiveIntegerField, TextField
 from django.db.models import TextChoices
 from django.db.models.fields.related import ForeignKey
 from django.conf import settings
 from django_countries.fields import CountryField
 
-from customers.models import Address
 from products.models import Product
 
 User = settings.AUTH_USER_MODEL
@@ -22,11 +21,11 @@ class PostType(Model):
 class Order(Model):
 
     class OrderStatus(TextChoices):
-        WAITING='W','Waiting'
-        PACKING='P', 'Packing'
-        SENDING='S','Sending'
-        FAIL='F', 'Failed'
-        COMPLETE='C', 'Completed'
+        WAITING = 'W', 'Waiting'
+        PACKING = 'P', 'Packing'
+        SENDING = 'S', 'Sending'
+        FAIL = 'F', 'Failed'
+        COMPLETE = 'C', 'Completed'
 
     status = CharField(max_length=1, choices=OrderStatus.choices, default=OrderStatus.WAITING)
 
@@ -40,8 +39,7 @@ class Order(Model):
     street = CharField(max_length=255)
     postal_code = CharField(max_length=50)
 
-    post_type_price=PositiveIntegerField()
-    # price = PositiveIntegerField()
+    post_type_price = PositiveIntegerField()
     buy_token = CharField(max_length=255)
 
     created_at = DateTimeField(auto_now_add=True)

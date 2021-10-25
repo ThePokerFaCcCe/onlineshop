@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('file', picturic.fields.PictureField(upload_to=picturic.utils.upload_to_path_generic)),
                 ('object_id', models.PositiveIntegerField()),
-                ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,related_name='pictures', to='contenttypes.contenttype')),
+                ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pictures', to='contenttypes.contenttype')),
             ],
         ),
         migrations.DeleteModel(

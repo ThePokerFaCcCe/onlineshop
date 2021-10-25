@@ -9,9 +9,10 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from .utils import upload_to_path_generic
 from .fields import PictureField
 
+
 class PictureGeneric(Model):
     file = PictureField(make_thumbnail=True, upload_to=upload_to_path_generic)
 
-    content_type = ForeignKey(to=ContentType, on_delete=CASCADE,related_name="pictures")
+    content_type = ForeignKey(to=ContentType, on_delete=CASCADE, related_name="pictures")
     object_id = PositiveIntegerField()
     content_object = GenericForeignKey()

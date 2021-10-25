@@ -14,19 +14,20 @@ SEPARATE_STR = '*'
 
 
 class PictureFileField(ImageFieldFile):
-    def __init__(self, committed: bool, image: ImageFieldFile, thumbnail: Optional[ImageFieldFile] = None, _file=None,name=None):
+    def __init__(self, committed: bool, image: ImageFieldFile, thumbnail: Optional[ImageFieldFile] = None, _file=None, name=None):
         super().__init__(image.instance, image.field, image.name)
         self.image = image
         self.thumbnail = thumbnail
         self._committed = committed
         self._has_thumbnail = True if thumbnail else False
         self._file = _file
-        self.name=name or image.name
+        self.name = name or image.name
 
     @property
     def has_thumbnail(self) -> bool:
         return self._has_thumbnail
-    def delete(self, save = False) -> None:
+
+    def delete(self, save=False) -> None:
         try:
             self.image.delete(save=save)
         except:
@@ -44,11 +45,11 @@ class PictureDescriptor(ImageFileDescriptor):
     def __get__(self, instance, cls=None):
         data = super().__get__(instance, cls)
         if isinstance(data, ImageFieldFile):
-            #print(data.__dict__)
+            # print(data.__dict__)
             text = data.name
             # if not isinstance(text,str):
             #     return data
-            if not isinstance(text,str) or SEPARATE_STR not in text:
+            if not isinstance(text, str) or SEPARATE_STR not in text:
                 return PictureFileField(
                     image=self._create_file(instance, data.field, text),
                     committed=data._committed,
@@ -87,6 +88,7 @@ class PictureField(ImageField):
     """
     descriptor_class = PictureDescriptor
     _upload_to_path = upload_to_path
+
     def __init__(self, upload_to='', use_upload_to_func: bool = False, make_thumbnail: bool = False,
                  verbose_name: Optional[str] = None, name: Optional[str] = None,
                  width_field: Optional[str] = None, height_field: Optional[str] = None,
@@ -102,7 +104,7 @@ class PictureField(ImageField):
         self.thumbnail_size, self.make_thumbnail = thumbnail_size, make_thumbnail
         if use_upload_to_func:
             upload_to = self._upload_to_path
-        kwargs['max_length']=9999
+        kwargs['max_length'] = 9999
         super().__init__(upload_to=upload_to, verbose_name=verbose_name, name=name, width_field=width_field, height_field=height_field, **kwargs)
 
     def pre_save(self, model_instance, add):

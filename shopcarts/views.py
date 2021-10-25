@@ -34,6 +34,6 @@ class CartItemViewset(CreateModelMixin, RetrieveModelMixin,
     def get_serializer_context(self):
         return {
             'cart_id': self.kwargs.get("cart_id"),
-            'queryset':self.get_queryset(),
+            'queryset': self.get_queryset(),
             **super().get_serializer_context(),
         }

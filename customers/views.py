@@ -14,7 +14,7 @@ from .serializers import AddressSerializer, CustomerToAdminSerializer, CustomerP
 class CustomerViewset(viewsets.ViewSet, generics.GenericAPIView):
     queryset = Customer.objects.defer('password').all()
 
-    @action(detail=True, methods=all_methods('patch', 'put',only_these=True), permission_classes=[IsSuperUser], serializer_class=CustomerToAdminSerializer)
+    @action(detail=True, methods=all_methods('patch', 'put', only_these=True), permission_classes=[IsSuperUser], serializer_class=CustomerToAdminSerializer)
     def admin_perms(self, req, pk):
         user = self.get_object()
         serializer = self.get_serializer_class()(user, data=req.data, partial=(req.method == 'PATCH'))
@@ -22,7 +22,7 @@ class CustomerViewset(viewsets.ViewSet, generics.GenericAPIView):
         serializer.save()
         return Response(data=serializer.data)
 
-    @action(detail=True, methods=all_methods('get', 'post',only_these=True), permission_classes=[IsOwnerOfItem|IsAdmin],
+    @action(detail=True, methods=all_methods('get', 'post', only_these=True), permission_classes=[IsOwnerOfItem | IsAdmin],
             serializer_class=CustomerProfileSerializer, parser_classes=(MultiPartParser,))
     def profile_image(self, req, pk):
         user = self.get_object()

@@ -22,7 +22,7 @@ class SocialProductViewset(ProductViewset):
     queryset = ProductViewset.queryset.prefetch_related('tags__tag', 'comments', 'likes').all()
     serializer_class = SocialProductSerializer
 
-    @action(detail=True, methods=all_methods('post', 'get',only_these=True), permission_classes=[permissions.IsAuthenticatedOrReadOnly], serializer_class=LikeSerializer)
+    @action(detail=True, methods=all_methods('post', 'get', only_these=True), permission_classes=[permissions.IsAuthenticatedOrReadOnly], serializer_class=LikeSerializer)
     def like(self, request, id):
         product = self.get_object()
         liked_by_user = False

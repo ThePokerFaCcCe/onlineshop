@@ -1,5 +1,5 @@
 from drf_spectacular.utils import OpenApiExample, OpenApiResponse
-from utils.schema_helper import RESPONSE_DEFAULT_RETRIEVE, schema_generator,REQUEST_DEFAULT
+from utils.schema_helper import RESPONSE_DEFAULT_RETRIEVE, schema_generator, REQUEST_DEFAULT
 
 PICTURE_GENERIC_RESPONSE = OpenApiExample(
     **RESPONSE_DEFAULT_RETRIEVE,

@@ -142,15 +142,15 @@ class ProductSerializer(serializers.ModelSerializer):
 
 @extend_schema_serializer(examples=[SIMPLE_PRODUCT_RETRIEVE])
 class ReadOnlyProductSerializer(serializers.ModelSerializer):
-    pictures = PictureGenericSerializer(many= True)
+    pictures = PictureGenericSerializer(many=True)
 
     class Meta:
         model = Product
-        fields=[
+        fields = [
             'id',
             'title',
             'description',
             'price',
             'pictures',
         ]
-        read_only_fields=fields
+        read_only_fields = fields

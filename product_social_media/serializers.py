@@ -91,7 +91,6 @@ class SocialProductSerializer(ProductSerializer):
             TaggedItem.objects.filter(content_type=content_types.PRODUCT, object_id=product.pk).delete()
             self._create_tags(tags_pk, product.pk)
 
-
         return super().update(product, validated_data)
 
     def to_representation(self, product):

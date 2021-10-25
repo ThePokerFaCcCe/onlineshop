@@ -52,7 +52,7 @@ class CartItemSerializer(serializers.ModelSerializer):
             product_id=validated_data.get("product"),
         )
         if item.exists():
-            item=item.get()
+            item = item.get()
             item.quantity = validated_data.get("quantity", item.quantity)
             item.save()
             return item

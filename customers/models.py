@@ -1,18 +1,18 @@
 # ADD A CUSTOM URL AND: 1-SELECT USER 2-SET USER.AGE TO SOMETHING! # <-This comment is too old and I won't delete it :)
 from django.db.models.base import Model
 from django.db.models.deletion import CASCADE
-from django.db.models.fields import CharField, DateTimeField, PositiveIntegerField, EmailField, BooleanField
-from django.core.validators import MaxValueValidator, MinLengthValidator, MinValueValidator, RegexValidator
+from django.db.models.fields import CharField, DateTimeField, PositiveIntegerField, EmailField
+from django.core.validators import MaxValueValidator, MinLengthValidator, MinValueValidator
 from django.db.models.fields.related import ForeignKey
-from django_countries import Countries
 from django_countries.fields import CountryField
-from django.contrib.auth.models import AbstractBaseUser, AbstractUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 from picturic.fields import PictureField
 
 
 class Messages:
-    INVALID_USERNAME="Username can have [A-Z, a-z, 0-9, _] chars only."
+    INVALID_USERNAME = "Username can have [A-Z, a-z, 0-9, _] chars only."
+
 
 class CustomerManager(BaseUserManager):
     def create_user(self, username, password=None, *args, **kwargs):
@@ -63,7 +63,7 @@ class Customer(AbstractUser):
     last_name = CharField(max_length=120, null=True, blank=True)
     phone_number = CharField(max_length=32, validators=[MinLengthValidator(4)], null=True, blank=True)
     age = PositiveIntegerField(validators=[MinValueValidator(8), MaxValueValidator(120)], null=True, blank=True)
-    profile_image = PictureField(use_upload_to_func=True,make_thumbnail=True,blank=True,default='defaults/customer_profile/cat.jpg')
+    profile_image = PictureField(use_upload_to_func=True, make_thumbnail=True, blank=True, default='defaults/customer_profile/cat.jpg')
 
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)

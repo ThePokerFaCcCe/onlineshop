@@ -4,7 +4,7 @@ from uuid import uuid4
 from .settings import UPLOAD_PATH
 
 
-def upload_to_path(field,instance,filename):
+def upload_to_path(field, instance, filename):
     now = datetime.now()
     return UPLOAD_PATH.format(
 
@@ -14,10 +14,11 @@ def upload_to_path(field,instance,filename):
         day=now.day,
         hour=now.hour,
         minute=now.minute,
-        uuid= uuid4(),
+        uuid=uuid4(),
         microsecond=now.microsecond,
         extension=os.path.splitext(filename)[1],
     )
 
-def upload_to_path_generic(instance,filename):
-    return upload_to_path(None,instance.content_object,filename)
+
+def upload_to_path_generic(instance, filename):
+    return upload_to_path(None, instance.content_object, filename)

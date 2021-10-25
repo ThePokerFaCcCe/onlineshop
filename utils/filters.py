@@ -1,5 +1,6 @@
 from rest_framework.filters import OrderingFilter, SearchFilter
 
+
 class OrderingFilterWithSchema(OrderingFilter):
 
     def get_schema_operation_parameters(self, view):
@@ -8,10 +9,9 @@ class OrderingFilterWithSchema(OrderingFilter):
                 'name': self.ordering_param,
                 'required': False,
                 'in': 'query',
-                'description': 'Available fields: '+', '.join(getattr(view,'ordering_fields',[])),
+                'description': 'Available fields: '+', '.join(getattr(view, 'ordering_fields', [])),
                 'schema': {
                     'type': 'string',
                 },
             },
         ]
-

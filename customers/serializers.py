@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from django_countries.serializer_fields import CountryField
-from djoser.serializers import UserSerializer as DjoserUserSerializer, UserCreatePasswordRetypeSerializer as DjoserUserCreateSerializer
+from djoser.serializers import (
+    UserSerializer as DjoserUserSerializer,
+    UserCreatePasswordRetypeSerializer as DjoserUserCreateSerializer
+)
 
 from picturic.serializer_fields import PictureField
 from .models import Address, Customer

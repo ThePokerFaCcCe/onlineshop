@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework import routers
-from .views import TagViewset,CommentViewset
+from .views import TagViewset, CommentViewset
 
 router = routers.DefaultRouter()
 router.register('tag', TagViewset)
