@@ -111,9 +111,13 @@ class PictureField(ImageField):
         #print("[PRE SAVE]  -  ",getattr(model_instance, self.attname).__dict__)
         file = super().pre_save(model_instance, add)
         if self.make_thumbnail and file.name:
-            thumb_path = self._make_thumbnail(file)
-            file.name = SEPARATE_STR.join([file.name, thumb_path])
-            setattr(model_instance, self.attname, file)
+            try:
+                thumb_path = self._make_thumbnail(file)
+            except:
+                pass
+            else:
+                file.name = SEPARATE_STR.join([file.name, thumb_path])
+                setattr(model_instance, self.attname, file)
         return file
 
     def _make_thumbnail(self, image):
