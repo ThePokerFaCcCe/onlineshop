@@ -2,3 +2,4 @@
 media/*
 !media/defaults
 __pycache__
+static
