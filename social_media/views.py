@@ -8,9 +8,10 @@ from rest_framework.viewsets import GenericViewSet
 from social_media.schemas import COMMENT_RESPONSE_PAGINATED
 
 from user_perms.permissions import IsAdminOrReadOnly, IsOwnerOfItem
+from utils.core import all_methods
 from utils.paginations import DefaultLimitOffsetPagination
 from .models import Tag, Comment
-from .serializers import TagSerializer, CommentSerializer
+from .serializers import CommentUpdateSerializer, TagSerializer, CommentSerializer
 
 
 @permission_classes([IsAdminOrReadOnly])
@@ -25,21 +26,16 @@ class CommentViewset(mixins.RetrieveModelMixin,
                      mixins.DestroyModelMixin,
                      viewsets.GenericViewSet):
     queryset = Comment.objects.prefetch_related('reply', 'user').all()
-    serializer_class = CommentSerializer
-
+    http_method_names = all_methods('put')
     def get_queryset(self):
         if self.request.method == 'DELETE':
             return Comment.objects.all()
         return self.queryset
 
-    # Trying to make drf spectacular understands that in update, serializer won't get reply_to field!
-    # def get_serializer_class(self):
-    #     serializer = self.serializer_class
-
-    #     if self.request.method in ['PUT', 'PATCH']:
-    #         setattr(serializer.Meta, 'read_only_fields', ('reply_to',))
-
-    #     return serializer
+    def get_serializer_class(self):
+        if self.request.method == 'PATCH':
+            return CommentUpdateSerializer
+        return CommentSerializer
 
     def destroy(self, req, *args, **kwargs):
         """if an admin deletes a comment, comment will delete. else, comment will hide"""
@@ -56,7 +52,7 @@ class CommentViewset(mixins.RetrieveModelMixin,
                 comment.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAdminUser])
+    @action(detail=False, methods=all_methods('get',only_these=True), permission_classes=[permissions.IsAdminUser])
     def hidden_comments(self, req, *args, **kwargs):
         """Last deleted comments by users"""
         hidden_comments = self.get_queryset().filter(hidden=True).order_by('-created_at')

@@ -6,6 +6,7 @@ from rest_framework.decorators import action, permission_classes
 from rest_framework.response import Response
 
 from social_media.views import ListCreateCommentsViewset
+from utils.core import all_methods
 
 from .serializers import SocialProductSerializer, CustomCommentSerializer
 from products.views import ProductViewset
@@ -21,7 +22,7 @@ class SocialProductViewset(ProductViewset):
     queryset = ProductViewset.queryset.prefetch_related('tags__tag', 'comments', 'likes').all()
     serializer_class = SocialProductSerializer
 
-    @action(detail=True, methods=['post', 'get'], permission_classes=[permissions.IsAuthenticatedOrReadOnly], serializer_class=LikeSerializer)
+    @action(detail=True, methods=all_methods('post', 'get',only_these=True), permission_classes=[permissions.IsAuthenticatedOrReadOnly], serializer_class=LikeSerializer)
     def like(self, request, id):
         product = self.get_object()
         liked_by_user = False

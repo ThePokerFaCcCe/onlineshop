@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from picturic.models import PictureGeneric
+from utils.core import all_methods
 from utils.filters import OrderingFilterWithSchema
 
 from utils.paginations import DefaultLimitOffsetPagination
@@ -21,13 +22,13 @@ class CategoryViewset(viewsets.ModelViewSet):
     queryset = Category.objects.select_related("featured_product").all()  # prefetch_related('products').
     serializer_class = CategorySerializer
 
-    @action(detail=True,methods=['get'])
+    @action(detail=True,methods=all_methods('get',only_these=True))
     def products(self, req, *args, **kwargs):
         category = self.get_object()
         serializer = ProductSerializer(category.products, many=True)
         return Response(serializer.data)
     
-    @action(detail=True,methods=['delete'])
+    @action(detail=True,methods=all_methods('delete',only_these=True))
     def clear_featured_product(self,req,*args,**kwargs):
         category = self.get_object()
         category.featured_product = None
@@ -56,10 +57,3 @@ class ProductViewset(viewsets.ModelViewSet):
         if self.request.method == 'DELETE':
             return Product.objects.all()
         return self.queryset
-
-
-# TEST
-@api_view(['POST', 'GET'])
-def userinfo(req):
-    print(req.user.is_authenticated)
-    return HttpResponse(req.user.age)

@@ -1,3 +1,2 @@
-use all_methods func for apps
 learn and add payment method for orders(I have no idea how they work! so i think it's the hard part) # it's not a real project so i don't need it
 picturic: use PictureField when we have multiple pics(kwarg: multiple=True on field) # for now I will use ForeignKey
