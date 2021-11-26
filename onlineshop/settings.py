@@ -75,6 +75,7 @@ SPECTACULAR_SETTINGS = {
     },
     'LICENSE': {'name': "MIT"},
     'VERSION': '1.0.0',
+    'SCHEMA_PATH_PREFIX': r'/api/v[0-9]',
 }
 DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,
