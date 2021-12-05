@@ -25,13 +25,6 @@ class CategoryViewset(viewsets.ModelViewSet):
         serializer = ProductSerializer(category.products, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=all_methods('delete', only_these=True))
-    def clear_featured_product(self, req, *args, **kwargs):
-        category = self.get_object()
-        category.featured_product = None
-        category.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 @permission_classes([IsAdminOrReadOnly])
 class PromotionViewset(viewsets.ModelViewSet):
