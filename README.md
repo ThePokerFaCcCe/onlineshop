@@ -2,14 +2,23 @@
 An e-commerce API backend with django and drf.
 it's still in progress and it isn't completed.
 
-
 # Installation
+1 - Clone project
 
-Create a database named `onlineshop` in your mysql db (I personally use xampp for db)<br>
-Now, create `.env` file in cloned folder and add variables of `.env.example` in your file<br>
-Install pipenv with cmd `py -m pip install pipenv`<br>
-Then open console in cloned folder and write `pipenv install`. 
-after that, active environment shell with `pipenv shell`<br>
-Now, migrate database with command `py manage.py migrate`, 
-and run the server with command `py manage.py runserver`<br>
-I used drf_spectacular in my project so you can easily use this link to see all of api links and their docs `http://127.0.0.1:8000/api/v1/docs/`<br>
+2 - Install pipenv with this command `py -m pip install pipenv` 
+
+3 - Create virtual environment and install packages using `py -m pipenv install` in cloned directory
+
+4 - Create `onlineshop` database in your mysql server
+
+5 - Create `.env` file in cloned directory and copy & replace `.env.example` with right data into it.
+
+6 - Run `py -m pipenv shell` to activate virtual environment
+
+7 - Migrate database with `py manage.py migrate` command
+
+8 - Create superuser using `py manage.py createsuperuser` command
+
+9 - Start server with `py manage.py runserver` command
+
+10- open http://127.0.0.1:8000/api/v1/docs/ in your browser
